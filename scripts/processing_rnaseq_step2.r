@@ -16,9 +16,11 @@ library(reshape)
 library(dplyr)
 
 
-accessions <- list.dirs(full.names=FALSE,recursive = FALSE)[-1]
+accessions <- list.dirs(full.names=FALSE,recursive = FALSE)
 accessions
 mart <- biomaRt::useMart(biomart = "ensembl", dataset =  "hsapiens_gene_ensembl")
+#for version 94
+#mart <- biomaRt::useMart(biomart = "ensembl", dataset =  "hsapiens_gene_ensembl", host ="http://oct2018.archive.ensembl.org")
 #mart = useMart(biomart = "ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl", host = "dec2016.archive.ensembl.org")
 t2g <- biomaRt::getBM(attributes = c("ensembl_transcript_id", "transcript_version", "ensembl_gene_id", "external_gene_name", "description", "transcript_biotype"), mart = mart)
 t2g$target_id <- paste(t2g$ensembl_transcript_id, t2g$transcript_version, sep=".") # append version number to the transcript ID
