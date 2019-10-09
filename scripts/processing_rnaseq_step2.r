@@ -18,9 +18,12 @@ library(dplyr)
 
 accessions <- list.dirs(full.names=FALSE,recursive = FALSE)
 accessions
-mart <- biomaRt::useMart(biomart = "ensembl", dataset =  "hsapiens_gene_ensembl")
-#for version 94
-#mart <- biomaRt::useMart(biomart = "ensembl", dataset =  "hsapiens_gene_ensembl", host ="http://oct2018.archive.ensembl.org")
+
+#NOTE: KEEP TRACK OF THE RIGHT VERSION BELOW...
+
+mart <- biomaRt::useMart(biomart="ensembl",dataset="hsapiens_gene_ensembl", host="http://jan2019.archive.ensembl.org")#release95
+#mart <- biomaRt::useMart(biomart = "ensembl", dataset =  "hsapiens_gene_ensembl")
+#mart <- biomaRt::useMart(biomart = "ensembl", dataset = "drerio_gene_ensembl")
 #mart = useMart(biomart = "ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl", host = "dec2016.archive.ensembl.org")
 t2g <- biomaRt::getBM(attributes = c("ensembl_transcript_id", "transcript_version", "ensembl_gene_id", "external_gene_name", "description", "transcript_biotype"), mart = mart)
 t2g$target_id <- paste(t2g$ensembl_transcript_id, t2g$transcript_version, sep=".") # append version number to the transcript ID
@@ -48,8 +51,8 @@ tx.kallisto <- tximport(kallisto.files, type = "kallisto", tx2gene = t2g, counts
 
 gb <- getBM(attributes=c("ensembl_gene_id","gene_biotype"), mart=mart)
 detach("package:biomaRt", unload=TRUE) #unload biomart because it creates problems with dplyr
-gb_coding<-subset(gb, gb$gene_biotype=="protein_coding")
-genes<-gb_coding$ensembl_gene_id
+#gb_coding<-subset(gb, gb$gene_biotype=="protein_coding")
+genes<-gb$ensembl_gene_id
 counts<-as.data.frame(tx.kallisto$counts[row.names(tx.kallisto$counts) %in% genes, ])
 
 tpm <- as.data.frame(tx.kallisto$abundance[row.names(tx.kallisto$abundance) %in% genes, ])

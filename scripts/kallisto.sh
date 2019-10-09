@@ -2,31 +2,32 @@
 #STEP2 mapping to kallisto
 for sample in `cat data/samples.tab`; do
     echo $sample
-mkdir /home/smgxcv0/tutorial/results/
-mkdir /home/smgxcv0/tutorial/results/${sample}
-mkdir /home/smgxcv0/tutorial/results/${sample}/cluster
+mkdir /home/REPLACEMEbyCSUSERNAME/tutorial/results/
+mkdir /home/REPLACEMEbyCSUSERNAME/tutorial/results/${sample}
+mkdir /home/REPLACEMEbyCSUSERNAME/tutorial/results/${sample}/cluster
 
-REF=/home/smgxcv0/tutorial/ref/Human_ref.index
+REF=/home/REPLACEMEbyCSUSERNAME/tutorial/ref/Human_rel95_ref.index
+#REF=/home/REPLACEMEbyCSUSERNAME/tutorial/ref/Zebrafish_rel97_ref.index
 
         echo "
 
 #!/bin/bash -l
 #$ -S /bin/bash
-#$ -o /home/smgxcv0/tutorial/results/${sample}/cluster/out
-#$ -e /home/smgxcv0/tutorial/results/${sample}/cluster/error
+#$ -o /home/REPLACEMEbyCSUSERNAME/tutorial/results/${sample}/cluster/out
+#$ -e /home/REPLACEMEbyCSUSERNAME/tutorial/results/${sample}/cluster/error
 #$ -l h_rt=03:00:00
 #$ -l tmem=11.9G,h_vmem=11.9G
 #$ -N  kallisto
-#$ -wd  /home/smgxcv0/tutorial/results/${sample}
+#$ -wd  /home/REPLACEMEbyCSUSERNAME/tutorial/results/${sample}
 #$ -V
 #$ -R y
 
 
-/share/apps/genomics/kallisto-0.44/bin/kallisto quant -i ${REF} -b 5 -o /home/smgxcv0/tutorial/results/${sample} /home/smgxcv0/tutorial/data/${sample}*R1*fastq.gz /home/smgxcv0/tutorial/data/${sample}*R2*fastq.gz
+/share/apps/kallisto-0.46.0 quant -i ${REF} -b 5 -o /home/REPLACEMEbyCSUSERNAME/tutorial/results/${sample} /home/REPLACEMEbyCSUSERNAME/tutorial/data/${sample}_R1*.fastq.gz /home/REPLACEMEbyCSUSERNAME/tutorial/data/${sample}_R2*.fastq.gz
 
-" > /home/smgxcv0/tutorial/results/$sample/cluster/${sample}_kallisto.sh
+" > /home/REPLACEMEbyCSUSERNAME/tutorial/results/$sample/cluster/${sample}_kallisto.sh
 
-     qsub /home/smgxcv0/tutorial/results/$sample/cluster/${sample}_kallisto.sh
+     qsub /home/REPLACEMEbyCSUSERNAME/tutorial/results/$sample/cluster/${sample}_kallisto.sh
 
 done 
 
