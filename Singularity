@@ -21,7 +21,7 @@ apt-get -y upgrade
 #apt-get -y install texlive-latex-base texlive-fonts-recommended texlive-latex-extra lmodern
 
 # Installing extra software
-apt-get -y install libssl-dev libcurl4-openssl-dev git git-lfs automake autoconf
+apt-get -y install libssl-dev libcurl4-openssl-dev git git-lfs automake autoconf libxml2 libxml2-dev
 
 
 apt-get -y install r-base-core
@@ -33,8 +33,10 @@ apt-get -y install r-base-core
 R --slave -e 'install.packages("BiocManager", dependencies=TRUE, repos = "http://cran.us.r-project.org")'
 R --slave -e 'BiocManager::install("tximport")'
 R --slave -e 'BiocManager::install("rhdf5")'
-R --slave -e 'BiocManager::install("DESeq2")'
-R --slave -e 'BiocManager::install("biomaRt")'
+
+R --slave -e 'BiocManager::install("DESeq2")' #FAIL
+R --slave -e 'BiocManager::install("biomaRt")' #FAIL
+
 R --slave -e 'BiocManager::install("reshape")'
 R --slave -e 'BiocManager::install("dplyr")'
 
@@ -42,7 +44,8 @@ R --slave -e 'BiocManager::install("dplyr")'
 cd /usr/bin
 wget "https://github.com/pachterlab/kallisto/releases/download/v0.46.0/kallisto_linux-v0.46.0.tar.gz"
 tar xvf kallisto_linux-v0.46.0.tar.gz
-
+rm -rf kallisto_linux-v0.46.0.tar.gz
+rm -rf kallisto/test/
 
 cd /
 
@@ -53,4 +56,4 @@ git clone https://github.com/afonsoguerra/tutorial.git
 %environment
 export LC_ALL=C
 export PATH=$PATH:$PWD
-export PATH="$PATH:/usr/bin/kallisto_linux-v0.46.0/bin"
+export PATH="$PATH:/usr/bin/kallisto"

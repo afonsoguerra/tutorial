@@ -18,6 +18,7 @@ REF=/home/REPLACEMEbyCSUSERNAME/tutorial/ref/Human_rel95_ref.index
 #$ -l h_rt=03:00:00
 #$ -l tmem=11.9G,h_vmem=11.9G
 #$ -N  kallisto
+#$ -hold_jid making_index_kallisto
 #$ -wd  /home/REPLACEMEbyCSUSERNAME/tutorial/results/${sample}
 #$ -V
 #$ -R y
