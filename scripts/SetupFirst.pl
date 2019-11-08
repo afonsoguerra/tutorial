@@ -39,7 +39,7 @@ for my $script (@scriptList) {
 
 	system('sed -i bck -e s/REPLACEMEbyCSUSERNAME/'.$csuser.'/ '.$script);
 	system('sed -i bck2 -e s/REPLACEMEbyUCLUSERNAME/'.$ucluser.'/ '.$script);
-	system('sed -i bck3 -e s/REPLACEMEbyKALLISTOPATH/singularity exec '.$here.'/tutorial_latest.sif kallisto/ '.$script);
+	system('sed -i bck3 -e s/REPLACEMEbyKALLISTOPATH/singularity exec '.$here.'\/tutorial_latest.sif kallisto/ '.$script);
 
 
 }
