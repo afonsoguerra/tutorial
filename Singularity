@@ -42,9 +42,9 @@ R --slave -e 'BiocManager::install("dplyr")'
 
 
 cd /usr/bin
-wget "https://github.com/pachterlab/kallisto/releases/download/v0.46.0/kallisto_linux-v0.46.0.tar.gz"
-tar xvf kallisto_linux-v0.46.0.tar.gz
-rm -rf kallisto_linux-v0.46.0.tar.gz
+wget "https://github.com/pachterlab/kallisto/releases/download/v0.46.1/kallisto_linux-v0.46.1.tar.gz"
+tar xvf kallisto_linux-v0.46.1.tar.gz
+rm -rf kallisto_linux-v0.46.1.tar.gz
 rm -rf kallisto/test/
 
 cd /
