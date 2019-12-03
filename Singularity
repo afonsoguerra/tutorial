@@ -23,10 +23,8 @@ apt-get -y upgrade
 # Installing extra software
 apt-get -y install libssl-dev libcurl4-openssl-dev git git-lfs automake autoconf libxml2 libxml2-dev
 
-
 apt-get -y install r-base-core
 #apt-get -y install tk-dev mesa-common-dev libglu1-mesa-dev #Satisfying dependencies for rgl that seems to be required below for RColorBrewer
-
 
 
 ## Install required R packages
@@ -34,8 +32,8 @@ R --slave -e 'install.packages("BiocManager", dependencies=TRUE, repos = "http:/
 R --slave -e 'BiocManager::install("tximport")'
 R --slave -e 'BiocManager::install("rhdf5")'
 
-R --slave -e 'BiocManager::install("DESeq2")' #FAIL
-R --slave -e 'BiocManager::install("biomaRt")' #FAIL
+#R --slave -e 'BiocManager::install("DESeq2")' #FAIL
+#R --slave -e 'BiocManager::install("biomaRt")' #FAIL
 
 R --slave -e 'BiocManager::install("reshape")'
 R --slave -e 'BiocManager::install("dplyr")'
