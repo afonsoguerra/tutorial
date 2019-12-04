@@ -21,7 +21,7 @@ apt-get -y upgrade
 #apt-get -y install texlive-latex-base texlive-fonts-recommended texlive-latex-extra lmodern
 
 # Installing extra software
-apt-get -y install libssl-dev libcurl4-openssl-dev git git-lfs automake autoconf libxml2 libxml2-dev
+apt-get -y install libssl-dev libcurl4-openssl-dev git git-lfs automake autoconf libxml2 libxml2-dev libcurl4-openssl-dev libfontconfig1-dev libcairo2-dev
 
 apt-get -y install r-base-core
 #apt-get -y install tk-dev mesa-common-dev libglu1-mesa-dev #Satisfying dependencies for rgl that seems to be required below for RColorBrewer
