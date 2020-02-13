@@ -5,11 +5,28 @@ use warnings;
 
 use Data::Dumper;
 
+
+my $here = `pwd`;
+chomp($here);
+
+my @temp = split('/',$here);
+my $asd = pop(@temp);
+my $oneup = join('/',@temp);
+
+
 my $uclID = `cat .ucluser`;
 chomp($uclID);
 
 my $server = "scp $uclID\@live.rd.ucl.ac.uk:";
 my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd002u-mnour10/RNAseq/fastq/';
+
+
+my $CONTAINER = `cat .container`;
+chomp($CONTAINER);
+;
+my $WGET = "singularity exec $CONTAINER wget ";
+my $KALLISTO = "singularity exec $CONTAINER kallisto ";
+
 
 #Sort out input
 die "Usage: $0 RunFileSpecsFile [RDS PATH]\n" if(!@ARGV);
@@ -17,18 +34,16 @@ my $filename = $ARGV[0];
 
 #Check for a sample list file
 open(IN, "$filename") or die "Could not open input file: $!\n";
-
+my @samples;
 while (my $line = <IN>) {
-        chomp($line);
-        next if($line eq "");
-        my @data = split("\t", $line);
+   chomp($line);
+   next if($line eq "");
+   my @data = split("\t", $line);
 
+   push($data[0],@samples);
 }
 
 close IN;
-
-
-
 
 #Ask for index details
 my $kallistoindex = `cat .kallistoindex`;
@@ -39,6 +54,15 @@ if(!-e $kallistoindex) {
    die "Something has gone badly wrong here. Please re-create your index or ask for help. Things are likely broken due to an incomplete move or rogue file deletion. Beware!\n";
 }
 
+my $void1 = &promptUser("Found a request for ".scalar(@samples)." samples, does that sound about right? (press ENTER to continue or CTRL+C to exit the script)"
+, "Yes");
+
+my $void2 = &promptUser("Using the index that was most recently setup [$kallistoindex] is that what you want to use? (press ENTER to continue or CTRL+C to exit the script)"
+, "Yes");
+
+
+die;
+
 #Check all samples exist in RDS? 
 
 
@@ -46,60 +70,8 @@ if(!-e $kallistoindex) {
 
 
 #Submit qsub files
-#!/usr/bin/env perl
-
-my $here = `pwd`;
-chomp($here);
-
-my @temp = split('/',$here);
-my $asd = pop(@temp);
-my $oneup = join('/',@temp);
-
-###Quick debug
-#die "$here\n$oneup\n";
-
-my $CONTAINER = `cat .container`;
-chomp($CONTAINER);
-
-my $WGET = "singularity exec $CONTAINER wget ";
-my $KALLISTO = "singularity exec $CONTAINER kallisto ";
-
-#Check for latest versions
-
-system("$WGET --spider --no-remove-listing -q ftp://ftp.ensembl.org/pub/");
-my $latestReleases = ` cat .listing | grep release | tail -n 3 | rev | cut -b -24 | rev`;
-system("rm -rf .listing");
 
 
-print STDERR "\n\nWelcome to the script to download and index Ensembl genomes\n\n";
-
-print STDERR "The latest Ensembl versions are :\n".$latestReleases."\n\n";
-
-
-my @tmp = split("\n", $latestReleases);
-my $latest = "NA";
-$latest = $1 if($tmp[-1]=~ m/release-(\d+)/);
-
-#Ask about version
-my $ensVer = &promptUser("What is the Ensembl version you want to download? ", $latest);
-
-#Ask about species
-
-my $ensSP = &promptUser("What is the Ensembl species you want to download?\nLikely choices are \"homo_sapiens\" or \"danio_rerio\"\nThe default is ", "homo_sapiens");
-
-
-print STDERR "Downloading Transcriptome file, please wait ...\n\n";
-
-my $FASTA = "$oneup/Data/Ensembl-${ensSP}-${ensVer}-cdna.fa.gz";
-my $OUT = "$oneup/ref/Ensembl-${ensSP}-${ensVer}.index";
-
-system("echo \"$OUT\" > .kallistoindex");
-
-
-if(-e $OUT) {
-   print STDERR "Index already exists for that version/species combination, setting it as default and exiting without further action\n";
-   exit(0);
-}
 
 
 system("mkdir -p $oneup/Data/");
