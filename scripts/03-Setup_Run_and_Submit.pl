@@ -85,14 +85,14 @@ my $qsubHere = <<"QSUB";
 #\$ -S /bin/bash
 #\$ -o $oneup/ref/cluster/${sample}.out
 #\$ -e $oneup/ref/cluster/${sample}.error
-#$ -l h_rt=03:00:00
-#$ -l tmem=11.9G,h_vmem=11.9G
-#$ -l tscratch=20G
-#$ -N  kallisto
-#$ -hold_jid making_index_kallisto
-#$ -wd $oneup/results/${sample}
-#$ -V
-#$ -R y
+#\$ -l h_rt=03:00:00
+#\$ -l tmem=11.9G,h_vmem=11.9G
+#\$ -l tscratch=20G
+#\$ -N  kallisto
+#\$ -hold_jid making_index_kallisto
+#\$ -wd $oneup/results/${sample}
+#\$ -V
+#\$ -R y
 
 mkdir -p /scratch0/$uclID/
 
