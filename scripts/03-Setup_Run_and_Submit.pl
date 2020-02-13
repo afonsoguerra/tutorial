@@ -92,19 +92,19 @@ my $qsubHere = <<"QSUB";
 #\$ -V
 #\$ -R y
 
-mkdir -p /scratch0/$uclID/
+mkdir -p /scratch0/$uclID/\$JOB_ID/
 echo "DEBUG"
-ls /scratch0/$uclID/
-${server}${RDSPATH}${sample}*.fastq.gz /scratch0/$uclID/
-ls /scratch0/$uclID/
+ls /scratch0/$uclID/\$JOB_ID/
+${server}${RDSPATH}${sample}*.fastq.gz /scratch0/$uclID/\$JOB_ID/
+ls /scratch0/$uclID/\$JOB_ID/
 
-echo $KALLISTO quant -i $kallistoindex -o $oneup/results/${sample}/ /scratch0/$uclID/${sample}_R1*.fastq.gz /scratch0/$uclID/${sample}_R2*.fastq.gz
-time $KALLISTO quant -i $kallistoindex -o $oneup/results/${sample}/ /scratch0/$uclID/${sample}_R1*.fastq.gz /scratch0/$uclID/${sample}_R2*.fastq.gz
+echo $KALLISTO quant -i $kallistoindex -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}_R2*.fastq.gz
+time $KALLISTO quant -i $kallistoindex -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}_R2*.fastq.gz
 
-rm -rf /scratch0/$uclID/${sample}*
+rm -rf /scratch0/$uclID/\$JOB_ID/${sample}*
 
 function finish {
-    rm -rf /scratch0/$uclID/${sample}*
+    rm -rf /scratch0/$uclID/\$JOB_ID/${sample}*
 }
 
 trap finish EXIT ERR
