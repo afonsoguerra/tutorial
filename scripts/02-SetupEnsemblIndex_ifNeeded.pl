@@ -40,15 +40,25 @@ my $ensSP = &promptUser("What is the Ensembl species you want to download?\nLike
 
 print STDERR "Downloading Transcriptome file, please wait ...\n\n";
 
+my $FASTA = "$oneup/Data/Ensembl-${ensSP}-${ensVer}-cdna.fa.gz";
+my $OUT = "$oneup/ref/Ensembl-${ensSP}-${ensVer}.index";
+
+system("echo \"$OUT\" > .kallistoindex");
+
+
+if(-e $OUT) {
+   print STDERR "Index already exists for that version/species combination, setting it as default and exiting without further action\n";
+   exit(0);
+}
+
+
 system("mkdir -p $oneup/Data/");
 system("mkdir -p $oneup/ref/");
 
 #Download file
-system("$WGET --no-parent --no-remove-listing -O $here/../Data/Ensembl-${ensSP}-${ensVer}-cdna.fa.gz ftp://ftp.ensembl.org/pub/release-${ensVer}/fasta/${ensSP}/cdna/*.all.fa.gz");
+system("$WGET --no-parent --no-remove-listing -O $FASTA ftp://ftp.ensembl.org/pub/release-${ensVer}/fasta/${ensSP}/cdna/*.all.fa.gz");
 #ftp://ftp.ensembl.org/pub/release-98/fasta/danio_rerio/cdna/
 
-my $FASTA = "$oneup/Data/Ensembl-${ensSP}-${ensVer}-cdna.fa.gz";
-my $OUT = "$oneup/ref/Ensembl-${ensSP}-${ensVer}.index";
 
 #Setup kallisto index run and set it going
 
@@ -65,9 +75,10 @@ $KALLISTO index -i $OUT $FASTA
 
 QSUB
 
-open(QSUB, " | qsub") or die;
+open(QSUB, ">.latestIndexing.qsub") or die;
    print QSUB $qsubHere;
 close QSUB;
+system("qsub .latestIndexing.qsub")
 
 
 print STDERR "The index has now been queued for processing, you can proceed setting up your run. If the index is not ready when you submit the main samples, they will be patient and wait.\n";
