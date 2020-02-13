@@ -78,7 +78,7 @@ QSUB
 open(QSUB, ">.latestIndexing.qsub") or die;
    print QSUB $qsubHere;
 close QSUB;
-system("qsub .latestIndexing.qsub")
+system("qsub .latestIndexing.qsub");
 
 
 print STDERR "The index has now been queued for processing, you can proceed setting up your run. If the index is not ready when you submit the main samples, they will be patient and wait.\n";
