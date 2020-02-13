@@ -98,7 +98,7 @@ ls /scratch0/$uclID/
 ${server}${RDSPATH}${sample}*.fastq.gz /scratch0/$uclID/
 ls /scratch0/$uclID/
 
-$KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample} /scratch0/$uclID/${sample}_R1*.fastq.gz /scratch0/$uclID/${sample}_R2*.fastq.gz
+echo $KALLISTO quant -i $kallistoindex -o $oneup/results/${sample} /scratch0/$uclID/${sample}_R1*.fastq.gz /scratch0/$uclID/${sample}_R2*.fastq.gz
 
 rm -rf /scratch0/$uclID/${sample}*
 
