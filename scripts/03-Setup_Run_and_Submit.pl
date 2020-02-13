@@ -14,6 +14,15 @@ my $asd = pop(@temp);
 my $oneup = join('/',@temp);
 
 
+if(!-e ".ucluser") {
+   die "It appears you are trying to run this script without first running the earlier setup scripts. Please run everything in order and try again.\n";
+}
+
+if(!-e ".container") {
+   die "It appears you are trying to run this script without first running the earlier setup scripts. Please run everything in order and try again.\n";
+}
+
+
 my $uclID = `cat .ucluser`;
 chomp($uclID);
 
@@ -40,7 +49,7 @@ while (my $line = <IN>) {
    next if($line eq "");
    my @data = split("\t", $line);
 
-   push($data[0],@samples);
+   push(@samples,$data[0]);
 }
 
 close IN;
@@ -90,14 +99,15 @@ $KALLISTO index -i \$OUT \$FASTA
 
 QSUB
 
+
+
 open(QSUB, ">.latestIndexing.qsub") or die;
    print QSUB $qsubHere;
 close QSUB;
 system("qsub .latestIndexing.qsub");
 
 
-print STDERR "All samples should now have been submitted for processing. Please check if they finished by running qstat, and once they all exit (qstat returns nothing), check the log files to see if anything failed... If you need to re-run anything, create a list with just the failed samples and re-run this script with that...\n";
-
+print STDERR "All samples should now have been submitted for processing. Please check if they finished by running qstat, and once they all exit (qstat returns nothing), check the log files to see if anything failed... If you need to re-run anything, create a list with just the failed samples in it and re-run this script with that...\n";
 
 
 
@@ -106,7 +116,7 @@ print STDERR "All samples should now have been submitted for processing. Please 
 sub promptUser {
 
 
-   local($promptString,$defaultValue) = @_;
+   my ($promptString,$defaultValue) = @_;
 
    if ($defaultValue) {
       print $promptString, "[", $defaultValue, "]: ";
