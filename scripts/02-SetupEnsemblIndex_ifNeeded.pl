@@ -7,7 +7,8 @@ my @temp = split('/',$here);
 my $asd = pop(@temp);
 my $oneup = join('/',@temp);
 
-die "$here\n$oneup\n";
+###Quick debug
+#die "$here\n$oneup\n";
 
 my $CONTAINER = `cat .container`;
 my $WGET = "singularity exec $CONTAINER wget ";
@@ -47,11 +48,11 @@ system("$WGET --no-parent --no-remove-listing -O $here/../Data/Ensembl-${ensSP}-
 #ftp://ftp.ensembl.org/pub/release-98/fasta/danio_rerio/cdna/
 
 my $FASTA = "$oneup/Data/Ensembl-${ensSP}-${ensVer}-cdna.fa.gz";
-my $OUT = "$oneup/ref/Ensembl-${ensSP}-${ensVer}.index"
+my $OUT = "$oneup/ref/Ensembl-${ensSP}-${ensVer}.index";
 
 #Setup kallisto index run and set it going
 
-my $qsubHere = = <<"QSUB";
+my $qsubHere = <<"QSUB";
 #!/bin/bash -l
 #$ -S /bin/bash
 #$ -o $oneup/ref/cluster/out
