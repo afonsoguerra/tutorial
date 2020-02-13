@@ -56,9 +56,10 @@ system("mkdir -p $oneup/Data/");
 system("mkdir -p $oneup/ref/");
 
 #Download file
-system("$WGET --no-parent --no-remove-listing -O $FASTA ftp://ftp.ensembl.org/pub/release-${ensVer}/fasta/${ensSP}/cdna/*.all.fa.gz");
-#ftp://ftp.ensembl.org/pub/release-98/fasta/danio_rerio/cdna/
-
+if(!-e $FASTA) {
+   system("$WGET --no-parent --no-remove-listing -O $FASTA ftp://ftp.ensembl.org/pub/release-${ensVer}/fasta/${ensSP}/cdna/*.all.fa.gz");
+   #ftp://ftp.ensembl.org/pub/release-98/fasta/danio_rerio/cdna/
+}
 
 #Setup kallisto index run and set it going
 
