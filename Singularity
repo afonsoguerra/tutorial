@@ -55,3 +55,5 @@ git clone https://github.com/afonsoguerra/tutorial.git
 export LC_ALL=C
 export PATH=$PATH:$PWD
 export PATH="$PATH:/usr/bin/kallisto"
+
+ 
