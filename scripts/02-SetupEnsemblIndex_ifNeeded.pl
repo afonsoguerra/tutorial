@@ -55,7 +55,7 @@ if(-e $OUT) {
 
 
 system("mkdir -p $oneup/Data/");
-system("mkdir -p $oneup/ref/");
+system("mkdir -p $oneup/ref/cluster/");
 
 #Download file
 if(!-e $FASTA) {
