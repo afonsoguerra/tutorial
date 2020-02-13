@@ -1,9 +1,6 @@
 #!/usr/bin/env perl
 
 
-#Change usernames in the scripts if needed
-my @scriptList = qw/getting_data_RSD.sh kallisto.sh making_index.sh processing_rnaseq_step2.r submitR.sh /;
-
 my $here = `pwd`;
 chomp($here);
 
@@ -21,40 +18,42 @@ if (!-e "tutorial_latest.sif") {
 	system("singularity exec tutorial_latest.sif ls /");
 }
 else {
-	print STDERR "It seems you have been here before... nice to see you again!";
+	print STDERR "It seems you have been here before... nice to see you again!\n";
 }
 
 #Ask about ensembl references that might be needed
 
 print STDERR "\n\nNow, let's customise the scripts... \n";
 
-my $ucluser = &promptUser("Enter the main UCL username ");
+if(-e '.ucluser') {
+   print "Re-using previously provided UCL username: ".`cat .ucluser`."\n";
+}
+else {
+   my $ucluser = &promptUser("Enter the main UCL username ");
+   system("echo \"$ucluser\" > .ucluser");
+}
 
 
+if(-e '.csuser') {
+   print "Re-using previously provided CS username: ".`cat .csuser`."\n";
+}
+else {
+   my $csuser = `whoami`;
+   chomp($csuser);
 
+   $csuser = &promptUser("Enter the CS cluster username ", $csuser);
+   system("echo \"$csuser\" > .csuser");
+}
 
-my $csuser = `whoami`;
-chomp($csuser);
+#print "$ucluser, $csuser\n";
 
-$csuser = &promptUser("Enter the CS cluster username ", $csuser);
-
-print "$ucluser, $csuser\n";
-
-system("echo \"$ucluser\" > .ucluser");
 
 #system(
 
 
-for my $script (@scriptList) {
-
-	$here =~ s/\//\/\//g;
-
-#	system('sed -i bck -e s/REPLACEMEbyCSUSERNAME/'.$csuser.'/ '.$script);
-#	system('sed -i bck2 -e s/REPLACEMEbyUCLUSERNAME/'.$ucluser.'/ '.$script);
-#	system('sed -i bck3 -e s/REPLACEMEbyKALLISTOPATH/singularity exec '.$here.'\/tutorial_latest.sif kallisto/ '.$script);
 
 
-}
+
 
 
 
