@@ -72,8 +72,6 @@ my $void2 = &promptUser("Using the index that was most recently setup [".basenam
 
 #Should somehow check here that the key are in place for the SSH 
 
-die;
-
 
 
 for my $sample (@samples) {
