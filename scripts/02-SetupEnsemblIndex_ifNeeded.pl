@@ -11,6 +11,8 @@ my $oneup = join('/',@temp);
 #die "$here\n$oneup\n";
 
 my $CONTAINER = `cat .container`;
+chomp($CONTAINER);
+
 my $WGET = "singularity exec $CONTAINER wget ";
 my $KALLISTO = "singularity exec $CONTAINER kallisto ";
 
