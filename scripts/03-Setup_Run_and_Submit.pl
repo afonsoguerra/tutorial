@@ -77,14 +77,6 @@ die;
 system("mkdir -p $oneup/Data/");
 system("mkdir -p $oneup/ref/cluster/");
 
-#Download file
-if(!-e $FASTA) {
-   system("$WGET --no-parent --no-remove-listing -O $FASTA ftp://ftp.ensembl.org/pub/release-${ensVer}/fasta/${ensSP}/cdna/*.all.fa.gz");
-   #ftp://ftp.ensembl.org/pub/release-98/fasta/danio_rerio/cdna/
-}
-
-#Setup kallisto index run and set it going
-
 my $qsubHere = <<"QSUB";
 #!/bin/bash -l
 #\$ -S /bin/bash
@@ -94,7 +86,7 @@ my $qsubHere = <<"QSUB";
 #\$ -l tmem=8.9G,h_vmem=8.9G
 #\$ -N making_index_kallisto
 
-$KALLISTO index -i $OUT $FASTA
+$KALLISTO index -i \$OUT \$FASTA
 
 QSUB
 
@@ -104,7 +96,10 @@ close QSUB;
 system("qsub .latestIndexing.qsub");
 
 
-print STDERR "The index has now been queued for processing, you can proceed setting up your run. If the index is not ready when you submit the main samples, they will be patient and wait.\n";
+print STDERR "All samples should now have been submitted for processing. Please check if they finished by running qstat, and once they all exit (qstat returns nothing), check the log files to see if anything failed... If you need to re-run anything, create a list with just the failed samples and re-run this script with that...\n";
+
+
+
 
 
 
