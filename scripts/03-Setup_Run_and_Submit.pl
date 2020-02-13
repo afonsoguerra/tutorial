@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Data::Dumper;
-
+use File::basename;
 
 my $here = `pwd`;
 chomp($here);
@@ -66,7 +66,7 @@ if(!-e $kallistoindex) {
 my $void1 = &promptUser("Found a request for ".scalar(@samples)." samples, does that sound about right? (press ENTER to continue or CTRL+C to exit the script)"
 , "Yes");
 
-my $void2 = &promptUser("Using the index that was most recently setup [$kallistoindex] is that what you want to use? (press ENTER to continue or CTRL+C to exit the script)"
+my $void2 = &promptUser("Using the index that was most recently setup [".basename($kallistoindex)."] is that what you want to use? (press ENTER to continue or CTRL+C to exit the script)"
 , "Yes");
 
 
