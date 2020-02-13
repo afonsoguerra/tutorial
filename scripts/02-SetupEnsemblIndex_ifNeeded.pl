@@ -71,7 +71,7 @@ my $qsubHere = <<"QSUB";
 #\$ -o $oneup/ref/cluster/out
 #\$ -e $oneup/ref/cluster/error
 #\$ -l h_rt=04:00:00
-#\$ -l tmem=2.9G,h_vmem=2.9G
+#\$ -l tmem=8.9G,h_vmem=8.9G
 #\$ -N making_index_kallisto
 
 $KALLISTO index -i $OUT $FASTA
