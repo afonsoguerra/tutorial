@@ -51,7 +51,7 @@ my $OUT = "$oneup/ref/Ensembl-${ensSP}-${ensVer}.index"
 
 #Setup kallisto index run and set it going
 
-my $qsubHere = "
+my $qsubHere = = <<"QSUB";
 #!/bin/bash -l
 #$ -S /bin/bash
 #$ -o $oneup/ref/cluster/out
@@ -60,10 +60,9 @@ my $qsubHere = "
 #$ -l tmem=2.9G,h_vmem=2.9G
 #$ -N making_index_kallisto
 
-
 $KALLISTO index -i $OUT $FASTA
 
-";
+QSUB
 
 open(QSUB, " | qsub") or die;
    print QSUB $qsubHere;
