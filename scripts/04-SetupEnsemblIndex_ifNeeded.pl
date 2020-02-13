@@ -1,12 +1,21 @@
 #!/usr/bin/env perl
 
-my $CONTAINER = '';
-my $WGET = "$CONTAINER wget ";
-my $KALLISTO = "";
+my $here = `pwd`;
+chomp($here);
+
+my @temp = split('/',$here);
+my $asd = pop(@temp);
+my $oneup = join('/',@temp);
+
+die "$here\n$oneup\n";
+
+my $CONTAINER = `cat .container`;
+my $WGET = "singularity exec $CONTAINER wget ";
+my $KALLISTO = "singularity exec $CONTAINER kallisto ";
 
 #Check for latest versions
 
-system("wget --spider --no-remove-listing -q ftp://ftp.ensembl.org/pub/");
+system("$WGET --spider --no-remove-listing -q ftp://ftp.ensembl.org/pub/");
 my $latestReleases = ` cat .listing | grep release | tail -n 3 | rev | cut -b -24 | rev`;
 system("rm -rf .listing");
 
@@ -28,38 +37,40 @@ my $ensVer = &promptUser("What is the Ensembl version you want to download? ", $
 my $ensSP = &promptUser("What is the Ensembl species you want to download?\nLikely choices are \"homo_sapiens\" or \"danio_rerio\"\nThe default is ", "homo_sapiens");
 
 
-
 print STDERR "Downloading Transcriptome file, please wait ...\n\n";
 
+system("mkdir -p $oneup/Data/");
+system("mkdir -p $oneup/ref/");
+
 #Download file
-system("$WGET --no-parent --no-remove-listing -O ../Data/Ensembl-${ensSP}-${ensVer}-cdna.fa.gz ftp://ftp.ensembl.org/pub/release-${ensVer}/fasta/${ensSP}/cdna/*.all.fa.gz");
+system("$WGET --no-parent --no-remove-listing -O $here/../Data/Ensembl-${ensSP}-${ensVer}-cdna.fa.gz ftp://ftp.ensembl.org/pub/release-${ensVer}/fasta/${ensSP}/cdna/*.all.fa.gz");
 #ftp://ftp.ensembl.org/pub/release-98/fasta/danio_rerio/cdna/
 
-
+my $FASTA = "$oneup/Data/Ensembl-${ensSP}-${ensVer}-cdna.fa.gz";
+my $OUT = "$oneup/ref/Ensembl-${ensSP}-${ensVer}.index"
 
 #Setup kallisto index run and set it going
 
+my $qsubHere = "
 #!/bin/bash -l
 #$ -S /bin/bash
-#$ -o /home/REPLACEMEbyCSUSERNAME/tutorial/ref/cluster/out
-#$ -e /home/REPLACEMEbyCSUSERNAME/tutorial/ref/cluster/error
+#$ -o $oneup/ref/cluster/out
+#$ -e $oneup/ref/cluster/error
 #$ -l h_rt=04:00:00
-#$ -pe smp 4
 #$ -l tmem=2.9G,h_vmem=2.9G
-#$ -N  making_index_kallisto
+#$ -N making_index_kallisto
 
 
+$KALLISTO index -i $OUT $FASTA
 
-#FASTA=/home/REPLACEMEbyCSUSERNAME/tutorial/data/Homo_sapiens.GRCh38_rel95.cdna.all.fa.gz
-FASTA=/home/REPLACEMEbyCSUSERNAME/tutorial/data/Danio_rerio.GRCz11.cdna.all.fa.gz
-#OUT=/home/REPLACEMEbyCSUSERNAME/tutorial/ref/Human_rel95_ref.index
-OUT=/home/REPLACEMEbyCSUSERNAME/tutorial/ref/Zebrafish_rel97_ref.index
+";
 
-/share/apps/kallisto-0.46.0  index -i $OUT $FASTA
-
-
+open(QSUB, " | qsub") or die;
+   print QSUB $qsubHere;
+close QSUB;
 
 
+print STDERR "The index has now been queued for processing, you can proceed setting up your run. If the index is not ready when you submit the main samples, they will be patient and wait.\n";
 
 
 
