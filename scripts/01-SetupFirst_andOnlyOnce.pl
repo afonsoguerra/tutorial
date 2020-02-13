@@ -8,7 +8,7 @@ my $here = `pwd`;
 chomp($here);
 
 
-print STDERR "\n\nWelcome to the setup script. If you see anything between square brackets, and it is a correct answer, just press Enter\n\n";
+print STDERR "\n\nWelcome to the setup script. If you see anything between square brackets, and it is a correct answer, just press Enter, you only need to type the answer if I can not find it out automatically\n\n";
 my $prompt = &promptUser("Press Enter now to continue the ", "setup");
 
 
@@ -20,12 +20,19 @@ if (!-e "tutorial_latest.sif") {
 	system("singularity pull shub://afonsoguerra/tutorial");
 	system("singularity exec tutorial_latest.sif ls /");
 }
+else {
+	print STDERR "It seems you have been here before... nice to see you again!";
+}
 
 #Ask about ensembl references that might be needed
 
-print STDERR "[DONE]\n\nLet's customise the scripts... \n";
+print STDERR "\n\nNow, let's customise the scripts... \n";
 
 my $ucluser = &promptUser("Enter the main UCL username ");
+
+
+
+
 my $csuser = `whoami`;
 chomp($csuser);
 
@@ -33,13 +40,18 @@ $csuser = &promptUser("Enter the CS cluster username ", $csuser);
 
 print "$ucluser, $csuser\n";
 
+system("echo \"$ucluser\" > .ucluser");
+
+#system(
+
+
 for my $script (@scriptList) {
 
 	$here =~ s/\//\/\//g;
 
-	system('sed -i bck -e s/REPLACEMEbyCSUSERNAME/'.$csuser.'/ '.$script);
-	system('sed -i bck2 -e s/REPLACEMEbyUCLUSERNAME/'.$ucluser.'/ '.$script);
-	system('sed -i bck3 -e s/REPLACEMEbyKALLISTOPATH/singularity exec '.$here.'\/tutorial_latest.sif kallisto/ '.$script);
+#	system('sed -i bck -e s/REPLACEMEbyCSUSERNAME/'.$csuser.'/ '.$script);
+#	system('sed -i bck2 -e s/REPLACEMEbyUCLUSERNAME/'.$ucluser.'/ '.$script);
+#	system('sed -i bck3 -e s/REPLACEMEbyKALLISTOPATH/singularity exec '.$here.'\/tutorial_latest.sif kallisto/ '.$script);
 
 
 }
