@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Data::Dumper;
-use File::basename;
+use File::Basename;
 
 my $here = `pwd`;
 chomp($here);
@@ -70,41 +70,49 @@ my $void2 = &promptUser("Using the index that was most recently setup [".basenam
 , "Yes");
 
 
+#Should somehow check here that the key are in place for the SSH 
+
 die;
 
-#Check all samples exist in RDS? 
 
 
-#Create necessary qsub files
+for my $sample (@samples) {
 
-
-#Submit qsub files
-
-
-
-
-system("mkdir -p $oneup/Data/");
-system("mkdir -p $oneup/ref/cluster/");
+system("mkdir -p $oneup/results/$sample/");
 
 my $qsubHere = <<"QSUB";
 #!/bin/bash -l
 #\$ -S /bin/bash
-#\$ -o $oneup/ref/cluster/out
-#\$ -e $oneup/ref/cluster/error
-#\$ -l h_rt=04:00:00
-#\$ -l tmem=8.9G,h_vmem=8.9G
-#\$ -N making_index_kallisto
+#\$ -o $oneup/ref/cluster/${sample}.out
+#\$ -e $oneup/ref/cluster/${sample}.error
+#$ -l h_rt=03:00:00
+#$ -l tmem=11.9G,h_vmem=11.9G
+#$ -l tscratch=20G
+#$ -N  kallisto
+#$ -hold_jid making_index_kallisto
+#$ -wd $oneup/results/${sample}
+#$ -V
+#$ -R y
 
-$KALLISTO index -i \$OUT \$FASTA
+mkdir -p /scratch0/$uclID/
+
+${server}${RDSPATH}${sample}*.fastq.gz /scratch0/$uclID/
+
+$KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample} /scratch0/$uclID/${sample}_R1*.fastq.gz /scratch0/$uclID/${sample}_R2*.fastq.gz
+
+rm -rf /scratch0/$uclID/${sample}*
+
 
 QSUB
 
 
 
-open(QSUB, ">.latestIndexing.qsub") or die;
+open(QSUB, "| qsub") or die;
    print QSUB $qsubHere;
 close QSUB;
-system("qsub .latestIndexing.qsub");
+
+}
+
 
 
 print STDERR "All samples should now have been submitted for processing. Please check if they finished by running qstat, and once they all exit (qstat returns nothing), check the log files to see if anything failed... If you need to re-run anything, create a list with just the failed samples in it and re-run this script with that...\n";
