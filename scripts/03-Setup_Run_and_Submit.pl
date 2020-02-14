@@ -80,8 +80,8 @@ system("mkdir -p $oneup/results/logfiles/");
 my $qsubHere = <<"QSUB";
 #!/bin/bash -l
 #\$ -S /bin/bash
-#\$ -o $oneup/results/logfiles/${sample}.out
-#\$ -e $oneup/results/logfiles/${sample}.error
+#\$ -o $oneup/results/logfiles/${sample}.log.txt
+#\$ -e $oneup/results/logfiles/${sample}.log.txt
 #\$ -l h_rt=01:00:00
 #\$ -l tmem=11.9G,h_vmem=11.9G
 #\$ -l tscratch=10G
