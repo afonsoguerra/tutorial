@@ -1,22 +1,9 @@
 ---
 title: "CS cluster RNAseq tutorial"
 author: "José Afonso Guerra-Assunção, based on original by Cristina Venturini"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
-
+# The RNAseq Pipeline for MN Group to be run in the new CS HPC Cluster
 
 These are brief instructions to run the RNAseq pipeline scripts within the new computer science cluster, automatically getting data from the MN RDS space.
 
@@ -38,8 +25,7 @@ Some things are not checked, namely:
 # How to run it
 
 
-## First, you need to connect to the cluster. 
-
+## First, you need to connect to the CS cluster
 
 Options:
 - Putty (for Windows)
