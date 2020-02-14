@@ -33,8 +33,8 @@ R --slave -e 'install.packages("BiocManager", dependencies=TRUE, repos = "http:/
 R --slave -e 'BiocManager::install("tximport")'
 R --slave -e 'BiocManager::install("rhdf5")'
 
-#R --slave -e 'BiocManager::install("DESeq2")' #FAIL
-#R --slave -e 'BiocManager::install("biomaRt")' #FAIL
+R --slave -e 'BiocManager::install("DESeq2")' #FAIL
+R --slave -e 'BiocManager::install("biomaRt")' #FAIL
 
 R --slave -e 'BiocManager::install("reshape")'
 R --slave -e 'BiocManager::install("dplyr")'
