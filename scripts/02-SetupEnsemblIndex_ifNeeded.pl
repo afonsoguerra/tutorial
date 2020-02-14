@@ -71,8 +71,7 @@ my $ensSP = &promptUser("What is the Ensembl species you want to download?\nLike
 my @temp2 = split('_',$ensSP);
 my $datasetString = substr($temp2[0],0,1).$temp2[1]."_gene_ensembl";
 
-die "$datasetString\n";
-
+#die "$datasetString\n";
 
 
 ### Setup/update R script to match dataset
@@ -136,6 +135,8 @@ write.csv(tpm, "tpm.csv")
 RSCRIPT
 
 
+
+die $RScript;
 
 
 
