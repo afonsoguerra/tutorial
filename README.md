@@ -75,15 +75,34 @@ pwd #check your current dir
 ```
 
 
-# Setting things up for the first time
+# Downloading all needed software and setting up usernames 
+
+This only needs to be run once, but if run multiple times it won't harm anything, just waste time...
+
 ```{bash,eval = FALSE}
 
 #Make sure you are inside the tutorial folder
 
-cd scripts
+cd scripts/
+
+perl 01-SetupFirst_andOnlyOnce.pl
 
 ```
 
+
+# Downloading all needed software and setting up usernames 
+
+This needs to be run when no index is present or to change the 'default' index currently being used by the pipeline. It will do the minimum amount of work needed each time. If things are already in place, it will just swap the default index to the new one. If index is new, it will generate it using qsub. 
+
+```{bash,eval = FALSE}
+
+#Make sure you are inside the tutorial folder
+
+cd scripts/
+
+perl 01-SetupFirst_andOnlyOnce.pl
+
+```
 
 
 
