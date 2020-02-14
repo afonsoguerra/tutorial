@@ -75,15 +75,16 @@ my $void2 = &promptUser("Using the index that was most recently setup [".basenam
 for my $sample (@samples) {
 
 system("mkdir -p $oneup/results/$sample/");
+system("mkdir -p $oneup/results/logfiles/");
 
 my $qsubHere = <<"QSUB";
 #!/bin/bash -l
 #\$ -S /bin/bash
-#\$ -o $oneup/ref/cluster/${sample}.out
-#\$ -e $oneup/ref/cluster/${sample}.error
-#\$ -l h_rt=03:00:00
+#\$ -o $oneup/results/logfiles/${sample}.out
+#\$ -e $oneup/results/logfiles/${sample}.error
+#\$ -l h_rt=01:00:00
 #\$ -l tmem=11.9G,h_vmem=11.9G
-#\$ -l tscratch=20G
+#\$ -l tscratch=10G
 #\$ -N  kallisto
 #\$ -hold_jid making_index_kallisto
 #\$ -wd $oneup/results/${sample}
@@ -91,13 +92,11 @@ my $qsubHere = <<"QSUB";
 #\$ -R y
 
 mkdir -p /scratch0/$uclID/\$JOB_ID/
-echo "DEBUG"
-#ls /scratch0/$uclID/\$JOB_ID/
+#echo "DEBUG"
 ${server}${RDSPATH}${sample}*.fastq.gz /scratch0/$uclID/\$JOB_ID/
 ls -lthr /scratch0/$uclID/\$JOB_ID/
 
-#echo $KALLISTO quant -i $kallistoindex -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}_R2*.fastq.gz
-time $KALLISTO quant -i $kallistoindex -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}_R2*.fastq.gz
+time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}_R2*.fastq.gz
 
 rm -rf /scratch0/$uclID/\$JOB_ID/${sample}*
 
