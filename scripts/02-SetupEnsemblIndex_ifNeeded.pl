@@ -139,8 +139,9 @@ RSCRIPT3
 
 
 
-die $RScript1.$RScript2.$RScript3."\n".$RScript2;
-
+open(RSCRIPT, ">RNAseq_Matrix_Generation_Script.R") or die;
+   print RSCRIPT $RScript1.$RScript2.$RScript3."\n";
+close RSCRIPT;
 
 
 print STDERR "Downloading Transcriptome file, please wait ...\n\n";
