@@ -53,10 +53,9 @@ if($ensVer ne $latest){
    }
    close IN;
 
-   die "ERROR: Unfortunately I couldn't find the requested Ensembl version, please try again\n";
+   die "ERROR: Unfortunately I couldn't find the requested Ensembl version, please try again\n" if($archive eq 'NA');
 
    #save matching ensembl host
-
    die "$archive .archive.ensembl.org\n";
    #aug2017.archive.ensembl.org
 }
