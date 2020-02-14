@@ -33,9 +33,7 @@ my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd002u-mnour10/RNAseq/fastq/';
 my $CONTAINER = `cat .container`;
 chomp($CONTAINER);
 ;
-my $WGET = "singularity exec $CONTAINER wget ";
-my $KALLISTO = "singularity exec $CONTAINER kallisto ";
-
+my $KALLISTO = "singularity exec -B /scratch0/$uclID/ $CONTAINER kallisto ";
 
 #Sort out input
 die "Usage: $0 RunFileSpecsFile [RDS PATH]\n" if(!@ARGV);
@@ -94,11 +92,11 @@ my $qsubHere = <<"QSUB";
 
 mkdir -p /scratch0/$uclID/\$JOB_ID/
 echo "DEBUG"
-ls /scratch0/$uclID/\$JOB_ID/
+#ls /scratch0/$uclID/\$JOB_ID/
 ${server}${RDSPATH}${sample}*.fastq.gz /scratch0/$uclID/\$JOB_ID/
-ls /scratch0/$uclID/\$JOB_ID/
+ls -lthr /scratch0/$uclID/\$JOB_ID/
 
-echo $KALLISTO quant -i $kallistoindex -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}_R2*.fastq.gz
+#echo $KALLISTO quant -i $kallistoindex -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}_R2*.fastq.gz
 time $KALLISTO quant -i $kallistoindex -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}_R2*.fastq.gz
 
 rm -rf /scratch0/$uclID/\$JOB_ID/${sample}*
