@@ -23,12 +23,8 @@ if(!-e ".container") {
 }
 
 
-
-
 my $CONTAINER = `cat .container`;
 chomp($CONTAINER);
-
-
 
 
 #Sort out input
@@ -52,10 +48,10 @@ my %failed;
 
 for my $sample (@samples) {
 
-   my $logfile = "$oneup/results/logfiles/${sample}.log.txt"
+   my $logfile = "$oneup/logfiles/${sample}.log.txt"
 
    #Check for fails
-
+   system("tail -n 5 $logfile");
 }
 
 
@@ -64,14 +60,29 @@ for my $sample (@samples) {
 # Add a script here for running the R bit
 
 
+my $qsubHere = <<"QSUB";
+#!/bin/bash -l
+#\$ -S /bin/bash
+#\$ -o $oneup/logfiles/make_matrix.log.txt
+#\$ -e $oneup/logfiles/make_matrix.log.txt
+#\$ -l h_rt=01:00:00
+#\$ -l tmem=11.9G,h_vmem=11.9G
+#\$ -N make_matrix
+#\$ -hold_jid kallisto
+#\$ -wd $oneup/results/
+#\$ -V
+#\$ -R y
 
+cd $oneup/results/
+singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/RNAseq_Matrix_Generation_Script.R 
+
+QSUB
 
 
 
 open(QSUB, "| qsub") or die;
    print QSUB $qsubHere;
 close QSUB;
-
 
 
 
