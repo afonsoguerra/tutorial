@@ -33,12 +33,11 @@ R --slave -e 'install.packages("BiocManager", dependencies=TRUE, repos = "http:/
 R --slave -e 'BiocManager::install("tximport")'
 R --slave -e 'BiocManager::install("rhdf5")'
 
-R --slave -e 'BiocManager::install("DESeq2")' #FAIL
-R --slave -e 'BiocManager::install("biomaRt")' #FAIL
+R --slave -e 'BiocManager::install("DESeq2")'
+R --slave -e 'BiocManager::install("biomaRt")'
 
 R --slave -e 'BiocManager::install("reshape")'
 R --slave -e 'BiocManager::install("dplyr")'
-
 
 cd /usr/bin
 wget "https://github.com/pachterlab/kallisto/releases/download/v0.46.1/kallisto_linux-v0.46.1.tar.gz"
@@ -51,10 +50,10 @@ cd /
 git clone https://github.com/afonsoguerra/tutorial.git
 
 
-
 %environment
 export LC_ALL=C
 export PATH=$PATH:$PWD
 export PATH="$PATH:/usr/bin/kallisto"
 
  
+#ADD APPS HERE
