@@ -35,6 +35,37 @@ $latest = $1 if($tmp[-1]=~ m/release-(\d+)/);
 #Ask about version
 my $ensVer = &promptUser("What is the Ensembl version you want to download? ", $latest);
 
+
+if($ensVer ne $latest){
+   #Regenerate Ensembl Archive list
+   system('curl \'https://www.ensembl.org/Help/ArchiveList\' | grep .archive.ensembl.org | sed -e \'s/li>/\n/g\' | grep cp-external | grep GRCh | egrep -o \'Ensembl ..: ... 20..\' | tr -d \':\' > .ensembl.archive.table')
+
+   #Parse Ensembl Archive list
+   open(IN, ".ensembl.archive.table") or die "Could not open input file: $!\n";
+
+   my $archive = 'NA';
+
+   while (my $line = <IN>) {
+      chomp($line);
+      next if($line eq "");
+      my @data = split(" ", $line);
+
+      if($data[1] eq $ensVer) {
+         $archive = $data[2].$data[3];
+      }
+   }
+   close IN;
+
+   #save matching ensembl host
+
+   die "$archive\n";
+}
+else {
+   #use/save defaults ensembl host
+
+}
+
+
 #Ask about species
 
 my $ensSP = &promptUser("What is the Ensembl species you want to download?\nLikely choices are \"homo_sapiens\" or \"danio_rerio\"\nThe default is ", "homo_sapiens");
