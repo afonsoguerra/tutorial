@@ -69,7 +69,7 @@ my $ensSP = &promptUser("What is the Ensembl species you want to download?\nLike
 
 #Save the current biomart dataset thingy here
 my @temp2 = split('_',$ensSP);
-my $datasetString = substr($temp2[0], 1,1).$temp2[1]."_gene_ensembl";
+my $datasetString = substr($temp2[0],0,1).$temp2[1]."_gene_ensembl";
 
 die "$datasetString\n";
 
