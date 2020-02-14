@@ -48,7 +48,7 @@ my %failed;
 
 for my $sample (@samples) {
 
-   my $logfile = "$oneup/logfiles/${sample}.log.txt"
+   my $logfile = "$oneup/logfiles/${sample}.log.txt";
 
    #Check for fails
    system("tail -n 5 $logfile");
