@@ -21,6 +21,9 @@ Some things are not checked, namely:
 - that the sample name provided is unique (if a generic name is provided like, "A" it will match a lot of samples and cause mayhem)
 - that the sample name provided exists (it will simply fail with file not found errors if this is a problem, but it isn't checked beforehand)
 
+This pipeline is packaged as a Singularity container that is automatically downloaded at step 1 of the instructions below. If manual installation is required, it can be retrieved from SingularityHub at:
+[![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/3656)
+
 
 # How to run it
 
