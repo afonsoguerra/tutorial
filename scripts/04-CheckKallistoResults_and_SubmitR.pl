@@ -44,22 +44,32 @@ while (my $line = <IN>) {
 
 close IN;
 
-my %failed;
+my @failed;
+open(FAIL, ">failedSamples.txt") or die;
 
 for my $sample (@samples) {
 
    my $logfile = "$oneup/logfiles/${sample}.log.txt";
 
    #Check for fails
-   system("tail -n 5 $logfile");
+   my $success = `grep -c bstrp $logfile`;
+   chomp($success);
+
+   if($success == 0){
+      print STDERR "ERROR: Sample $sample FAILED kallisto\n";
+      push(@failed, $sample);
+      print FAIL "$sample\n";
+   }
+}
+close FAIL;
+
+if(scalar(@failed) > 0){
+   die "ERROR: Unfortunately it appears that some of your samples [N=".scalar(@failed)."/".scalar(@samples)."] have failed to process correctly. For your convenience, these have been written to the failedSamples.txt file that can be used to re-submit them once the problem is corrected.\nPlease resolve the problem and re-start processing from step 02\n";
 }
 
 
 
-
 # Add a script here for running the R bit
-
-
 my $qsubHere = <<"QSUB";
 #!/bin/bash -l
 #\$ -S /bin/bash
