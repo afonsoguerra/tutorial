@@ -58,7 +58,7 @@ chomp($kallistoindex);
 
 #Make sure index exists or tell user to go create it
 if(!-e $kallistoindex) {
-   die "Something has gone badly wrong here. Please re-create your index or ask for help. Things are likely broken due to an incomplete move or rogue file deletion. Beware!\n";
+   print STDERR "ERROR: Index file not found.\nIf you have just set it to regenerate, please ignore this message and proceed without fear. Otherwise, something has gone badly wrong here. Please re-create your index or ask for help.\n";
 }
 
 my $void1 = &promptUser("Found a request for ".scalar(@samples)." samples, does that sound about right? (press ENTER to continue or CTRL+C to exit the script)"
