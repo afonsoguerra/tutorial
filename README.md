@@ -1,6 +1,6 @@
 ---
 title: "CS cluster RNAseq tutorial"
-author: "Cristina Venturini"
+author: "José Afonso Guerra-Assunção, based on original by Cristina Venturini"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -16,35 +16,92 @@ knitr::opts_chunk$set(
 )
 ```
 
-First, you need to connect to the cluster. Options:
 
+
+These are brief instructions to run the RNAseq pipeline scripts within the new computer science cluster, automatically getting data from the MN RDS space.
+
+Automation has been coded in as much as possible, so things don't have to be done over and over again, but with also a few checkpoints for people to double-check things are are expected. 
+
+The indexing script connect to Ensembl to retrieve the list of versions available. No need to check the website before running this. 
+
+Only one index (species/version combination) can be used at any one time, so at the moment it isn't possible to map things to Human and Zebrafish at the same time. Nevertheless it is very easy to map one, change the index and set the second run up. 
+
+All scripts are now interactive and will ask a few questions before running things. Answers that are unlikely to change (e.g. usernames) are saved in the same directory the scripts are run from, and won't be asked again if the answer is already found. 
+
+The scripts try to guess the answer that is most likely correct (e.g. latest ensembl version for human). If that is correct, pressing ENTER at the prompt should suffice. 
+
+Some things are not checked, namely:
+- that the sample name provided is unique (if a generic name is provided like, "A" it will match a lot of samples and cause mayhem)
+- that the sample name provided exists (it will simply fail with file not found errors if this is a problem, but it isn't checked beforehand)
+
+
+# How to run it
+
+
+## First, you need to connect to the cluster. 
+
+
+Options:
 - Putty (for Windows)
-
 - Mac/Linux: open terminal:
 ```{bash,eval = FALSE}
-ssh <userid>@bchuckle.cs.ucl.ac.uk
+ssh <userid>@pchuckle.cs.ucl.ac.uk
 ```
 
-Some useful unix/bash commands:
+
+## Getting the code for the first time
+
+```{bash,eval = FALSE}
+#Get the folder tutorial from github for the first time
+git clone https://github.com/afonsoguerra/tutorial.git
+
+```
+
+## Making sure the latest version is in place / updating code
+
+```{bash,eval = FALSE}
+cd tutorial #change to dir "tutorial"
+git pull # Update code from github if needed when the tutorial folder already exists
+```
+
+
+## Some useful unix/bash commands
 ```{bash,eval = FALSE}
 ls -lhrt #list dir contents
-mkdir tutorial #make a new dir called "tutorial"
+
 cd tutorial #change to dir "tutorial"
+
 pwd #check your current dir
 ```
 
 
-Download the tutorial from github:
+# Setting things up for the first time
+```{bash,eval = FALSE}
+
+#Make sure you are inside the tutorial folder
+
+cd scripts
+
+```
 
 
-Prepare the data: 
+
+
+
+# Preparing data
+
+All that will be retrieved at runtime, so the only thing needed here is a list of samples to be processed
 
 ```{bash,eval = FALSE}
-nano samples.tab #copy and paste your samples here. To come out: ctrl+x, press "Y"
-perl -lane 'print $F[0],"",$F[1],"*"' data/samples.tab > data/samples_todownload.tab #add * after each sample
-nano scripts/getting_data_RSD.sh #change user id
-sh scripts/getting_data_RSD.sh #this will download data from RSD storage. You will be prompted to insert your password twice - NB.it's your RSD/UCL password, not the CS cluster one!
+nano samples.tab # (file can be named anything) copy and paste your sample names here. To come out: ctrl+x, press "Y"
+
 ```
+
+
+
+
+
+
 
 Create index (only needed at the beginning or when it changes - now we are at release 94)
 
