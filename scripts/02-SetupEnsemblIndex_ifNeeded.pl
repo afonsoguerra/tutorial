@@ -76,7 +76,7 @@ my $datasetString = substr($temp2[0],0,1).$temp2[1]."_gene_ensembl";
 
 ### Setup/update R script to match dataset
 
-my $RScript = <<'RSCRIPT';
+my $RScript1 = <<'RSCRIPT1';
 
 #Processing Kallisto results
 #- read kallisto output
@@ -94,8 +94,11 @@ library(dplyr)
 accessions <- list.dirs(full.names=FALSE,recursive = FALSE)
 #accessions
 
-mart <- biomaRt::useMart(biomart="ensembl",dataset="'.$hsapiens_gene_ensembl.'", host="http://jan2019.archive.ensembl.org")
+RSCRIPT1
 
+my $RScript2 = 'mart <- biomaRt::useMart(biomart="ensembl",dataset="'.$datasetString.'", host="'.$archiveHostString.'")';
+
+my $RScript3 = <<'RSCRIPT3';
 t2g <- biomaRt::getBM(attributes = c("ensembl_transcript_id", "transcript_version", "ensembl_gene_id", "external_gene_name", "description", "transcript_biotype"), mart = mart)
 t2g$target_id <- paste(t2g$ensembl_transcript_id, t2g$transcript_version, sep=".") # append version number to the transcript ID
 t2g[,c("ensembl_transcript_id","transcript_version")] <- list(NULL) # delete the ensembl transcript ID and transcript version columns
@@ -132,11 +135,11 @@ write.csv(counts, "rawcounts.csv")
 write.csv(cpm, "cpm.csv")
 write.csv(tpm, "tpm.csv")
 
-RSCRIPT
+RSCRIPT3
 
 
 
-die $RScript;
+die $RScript1.$RScript2.$RScript3."\n".$RScript2;
 
 
 
