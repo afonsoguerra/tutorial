@@ -35,6 +35,7 @@ $latest = $1 if($tmp[-1]=~ m/release-(\d+)/);
 #Ask about version
 my $ensVer = &promptUser("What is the Ensembl version you want to download? ", $latest);
 
+my $archiveHostString = 'www.ensembl.org'; #Use the latest/main site by default
 
 if($ensVer ne $latest){
    #Regenerate and Parse Ensembl Archive list
@@ -56,13 +57,9 @@ if($ensVer ne $latest){
    die "ERROR: Unfortunately I couldn't find the requested Ensembl version, please try again\n" if($archive eq 'NA');
 
    #save matching ensembl host
-   die "$archive .archive.ensembl.org\n";
+   print STDERR "DEBUG: BioMart archive site is at: ".lc($archive).".archive.ensembl.org\n";
    #aug2017.archive.ensembl.org
-}
-else {
-   #use/save defaults ensembl host
-   #www.ensembl.org
-
+   $archiveHostString = lc($archive).".archive.ensembl.org";
 }
 
 
