@@ -119,13 +119,30 @@ perl 03-Setup_Run_and_Submit.pl samples.tab #Or whathever the sample list filena
 ```
 
 
-# Checking everything ran fine
+# Checking everything ran fine and running the R script to merge data into unified matrices
 
-The log files will be in the results/logfiles/*.log.txt
+There is a waiting time between step 03, when things are running in the cluster. How long this takes is unpredictable and depends on the number of samples submitted and how busy the cluster is as a whole.
 
-# Running the R script to merge data into unified matrices
+One way of checking if things have finished is to run:
 
-To Be Written up soon. 
+```{bash,eval = FALSE}
+
+qstat
+
+```
+
+This shall tell you what is running and what is queued for runnin on the cluster on your behalf. 
+
+If there is nothing in there, it means that everything has finished. Unfortunately, it doesn't mean everything finished according to plan, so we first need to check that all kallisto runs reached the end, and then, if all is well, we can issue the final command to aggregate the data into a single matrix. These last steps are performed with script 04 that can be run as indicated below. 
+
+
+```{bash,eval = FALSE}
+
+perl 04-CheckKallistoResults_and_SubmitR.pl samples.tab #Or whathever the sample list filename is
+
+
+```
+
 
 
 <!-- 
