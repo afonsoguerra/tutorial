@@ -90,7 +90,7 @@ perl 01-SetupFirst_andOnlyOnce.pl
 ```
 
 
-# Downloading all needed software and setting up usernames 
+# Adding an Ensembl Species/Version index 
 
 This needs to be run when no index is present or to change the 'default' index currently being used by the pipeline. It will do the minimum amount of work needed each time. If things are already in place, it will just swap the default index to the new one. If index is new, it will generate it using qsub. 
 
@@ -100,7 +100,7 @@ This needs to be run when no index is present or to change the 'default' index c
 
 cd scripts/
 
-perl 01-SetupFirst_andOnlyOnce.pl
+perl 02-SetupEnsemblIndex_ifNeeded.pl
 
 ```
 
@@ -109,39 +109,37 @@ perl 01-SetupFirst_andOnlyOnce.pl
 
 # Preparing data
 
-All that will be retrieved at runtime, so the only thing needed here is a list of samples to be processed
+All that will be retrieved at runtime, so the only thing needed here is a list of samples to be processed. This should be a text file with one or more tab delimited columns where the first column of the file has the sample name. This will be matched to the default MN RDS fastq folder to retrieve the R1 and R2 files at runtime. 
+
+Note: There is no longer a limit to the number of samples that can be submitted at once.
+
+This file can be generated in many different ways, one of which is:
 
 ```{bash,eval = FALSE}
 nano samples.tab # (file can be named anything) copy and paste your sample names here. To come out: ctrl+x, press "Y"
-
 ```
 
 
 
-
-
-
-
-Create index (only needed at the beginning or when it changes - now we are at release 94)
+# Submitting data for processing
 
 ```{bash,eval = FALSE}
-wget -O data/Homo_sapiens.GRCh38_rel94.cdna.all.fa.gz 'ftp://ftp.ensembl.org/pub/release-94/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz'
-```
 
-```{bash,eval = FALSE}
-nano scripts/making_index.sh #change user id/ dir
-mkdir ref
-mkdir ref/cluster
-qsub scripts/making_index.sh #submit the job - the job will go into a queue and then start to run
-qstat #to check your job: qw - waiting in the queue; r - running; Eqw - some problems!
-```
-
-Run kallisto 
-```{bash,eval = FALSE}
+perl 03-Setup_Run_and_Submit.pl samples.tab #Or whathever the sample list filename is
 
 ```
 
 
+# Checking everything ran fine
+
+The log files will be in the results/logfiles/*.log.txt
+
+# Running the R script to merge data into unified matrices
+
+To Be Written up soon. 
+
+
+<!-- 
 Get temp cmp and tpm matrix
 First time you run this: 
 ```{bash,eval = FALSE}
@@ -166,3 +164,4 @@ cd results/
 /share/apps/R-3.5.1/bin/R CMD BATCH ../scripts/processing_rnaseq_step2.r
 ```
 
+ -->
