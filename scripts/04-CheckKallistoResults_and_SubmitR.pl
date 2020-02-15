@@ -44,6 +44,9 @@ while (my $line = <IN>) {
 
 close IN;
 
+
+print STDERR "Hold tight, we are now checking if your ".scalar(@samples)." samples have processed correctly and are ready for aggregation... (may take a bit)\n";
+
 my @failed;
 open(FAIL, ">failedSamples.txt") or die;
 
@@ -64,7 +67,7 @@ for my $sample (@samples) {
 close FAIL;
 
 if(scalar(@failed) > 0){
-   die "ERROR: Unfortunately it appears that some of your samples [N=".scalar(@failed)."/".scalar(@samples)."] have failed to process correctly. For your convenience, these have been written to the failedSamples.txt file that can be used to re-submit them once the problem is corrected.\nPlease resolve the problem and re-start processing from step 02\n";
+   die "ERROR: Unfortunately it appears that some of your samples [N=".scalar(@failed)."/".scalar(@samples)."] have failed to process correctly. For your convenience, these have been written to the failedSamples.txt file that can be used to re-submit them once the problem is corrected.\nPlease resolve the problem and re-start processing from the previous step\n";
 }
 
 
@@ -96,7 +99,7 @@ close QSUB;
 
 
 
-print STDERR "Since you are seeing this message, no samples appear to have failed. Good news! Furthermore, R is now queued for running to create the final data matrices for this run. Thanks for using the pipeline, have a great day!\n";
+print STDERR "Happy Days! Since you are seeing this message, all samples appear to have successfully finished the previous steps.\nFurthermore, R is now queued for running to create the final data matrices for this run. Thanks for using the pipeline, have a great day!\n";
 
 
 
