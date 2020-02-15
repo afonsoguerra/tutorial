@@ -94,6 +94,10 @@ library(dplyr)
 accessions <- list.dirs(full.names=FALSE,recursive = FALSE)
 #accessions
 
+Sys.getenv(x="BIOMART_CACHE")
+biomartCacheInfo()
+
+
 RSCRIPT1
 
 my $RScript2 = 'mart <- biomaRt::useMart(biomart="ensembl",dataset="'.$datasetString.'", host="'.$archiveHostString.'")';
