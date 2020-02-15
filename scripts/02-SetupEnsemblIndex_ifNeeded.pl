@@ -85,18 +85,19 @@ my $RScript1 = <<'RSCRIPT1';
 #- write matrix
 #- summary of read counts
 
+Sys.setenv(XDG_CACHE_HOME="/tmp")
+Sys.getenv(x="BIOMART_CACHE")
+
 library(base)
 library(tximport)
 library(biomaRt)
 library(reshape)
 library(dplyr)
 
+biomartCacheInfo()
+
 accessions <- list.dirs(full.names=FALSE,recursive = FALSE)
 #accessions
-
-Sys.setenv(XDG_CACHE_HOME="/tmp")
-Sys.getenv(x="BIOMART_CACHE")
-biomartCacheInfo()
 
 
 RSCRIPT1
