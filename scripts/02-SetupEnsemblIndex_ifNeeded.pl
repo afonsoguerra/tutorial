@@ -94,6 +94,7 @@ library(dplyr)
 accessions <- list.dirs(full.names=FALSE,recursive = FALSE)
 #accessions
 
+Sys.setenv(XDG_CACHE_HOME="/tmp")
 Sys.getenv(x="BIOMART_CACHE")
 biomartCacheInfo()
 
