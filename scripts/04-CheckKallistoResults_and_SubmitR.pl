@@ -87,6 +87,7 @@ my $qsubHere = <<"QSUB";
 #\$ -R y
 
 cd $oneup/results/
+export BIOMART_CACHE=\"$oneup/ref/.biomaRt/\"
 singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/RNAseq_Matrix_Generation_Script.R 
 
 QSUB
