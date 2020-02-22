@@ -110,13 +110,46 @@ trap finish EXIT ERR
 
 QSUB
 
-
-
 open(QSUB, "| qsub") or die;
    print QSUB $qsubHere;
 close QSUB;
 
 }
+
+
+################### Setup email alert
+
+my $qsubHere = <<"QSUB";
+#!/bin/bash -l
+#\$ -S /bin/bash
+#\$ -o $oneup/logfiles/report.log.txt
+#\$ -e $oneup/logfiles/report.log.txt
+#\$ -l h_rt=00:10:00
+#\$ -l tmem=1.9G,h_vmem=1.9G
+#\$ -N report
+#\$ -hold_jid kallisto
+#\$ -cwd
+#\$ -V
+#\$ -R y
+
+date
+echo "All jobs finished"
+date
+
+function finish {
+   (echo "Subject: Latest RNAseq run" ; echo ; echo "All samples submitted to the RNAseq pipeline have now finished on the cluster. Please go and run the last steps to merge the data. ) | sendmail ${uclID}@ucl.ac.uk
+}
+
+trap finish EXIT ERR
+
+QSUB
+
+open(QSUB, "| qsub") or die;
+   print QSUB $qsubHere;
+close QSUB;
+
+
+
 
 
 
