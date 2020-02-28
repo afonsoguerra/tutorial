@@ -38,6 +38,8 @@ my $KALLISTO = "singularity exec -B /scratch0/$uclID/ $CONTAINER kallisto ";
 #Sort out input
 die "Usage: $0 RunFileSpecsFile [RDS PATH]\n" if(!@ARGV);
 my $filename = $ARGV[0];
+$RDSPATH = $ARGV[1] if(defined($ARGV[1]));
+
 
 #Check for a sample list file
 open(IN, "$filename") or die "Could not open input file: $!\n";
@@ -96,7 +98,7 @@ mkdir -p /scratch0/$uclID/\$JOB_ID/
 ${server}${RDSPATH}${sample}*.fastq.gz /scratch0/$uclID/\$JOB_ID/
 ls -lthr /scratch0/$uclID/\$JOB_ID/
 
-time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}_R2*.fastq.gz
+time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}*_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}*_R2*.fastq.gz
 
 rm -rf /scratch0/$uclID/\$JOB_ID/${sample}*
 
