@@ -98,7 +98,7 @@ mkdir -p /scratch0/$uclID/\$JOB_ID/
 ${server}${RDSPATH}${sample}*.fastq.gz /scratch0/$uclID/\$JOB_ID/
 ls -lthr /scratch0/$uclID/\$JOB_ID/
 
-time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}*_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}*_R2*.fastq.gz
+time $KALLISTO quant -i $kallistoindex -l 250.0 -s 50.0 --single  -b 5 -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}*_R1*.fastq.gz
 
 rm -rf /scratch0/$uclID/\$JOB_ID/${sample}*
 
