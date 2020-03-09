@@ -167,6 +167,7 @@ if(-e $OUT) {
 
 
 system("mkdir -p $oneup/Data/");
+system("mkdir -p $oneup/logfiles/");
 system("mkdir -p $oneup/ref/cluster/");
 
 #Download file
