@@ -128,6 +128,7 @@ counts<-as.data.frame(tx.kallisto$counts[row.names(tx.kallisto$counts) %in% gene
 
 tpm <- as.data.frame(tx.kallisto$abundance[row.names(tx.kallisto$abundance) %in% genes, ])
 
+#tpm$GeneName<-t2g$gene_symbol[match(rownames(tpm), t2g$ensembl_gene_id)]                                                                                      │··············
 
 #Let's divide the count for the total read counts - we then split the count file and write a new file for each sample
 
