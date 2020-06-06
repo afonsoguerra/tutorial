@@ -139,7 +139,7 @@ echo "All jobs finished"
 date
 
 function finish {
-   (echo "Subject: Latest RNAseq run" ; echo ; echo "All samples submitted to the RNAseq pipeline have now finished on the cluster. Please go and run the last steps to merge the data. ) | sendmail ${uclID}\@ucl.ac.uk
+   (echo "Subject: Latest RNAseq run" ; echo ; echo "All samples submitted to the RNAseq pipeline have now finished on the cluster. Please go and run the last steps to merge the data." ) | sendmail ${uclID}\@ucl.ac.uk
 }
 
 trap finish EXIT ERR
