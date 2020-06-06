@@ -1,7 +1,3 @@
-##This is a script with all function needed to run the QC 
-#RNAseq pipeline 12-03-2018
-
-
 
 
 #Equaliser - if number of genes differs in the TPM files (different Ensembl versions)
@@ -99,3 +95,40 @@ dedup_genesymbol <- function(filein,fileoutdedup){
   tpm <- tpm[-ncol(tpm)] # remove the mean col
   write.csv(tpm,fileoutdedup,row.names = FALSE)
 }
+
+
+#install.packages(c("dplyr", "tidyr","data.table"), dependencies = T)
+library(plyr)
+library(dplyr)
+library(tidyr)
+library(data.table)
+
+tpm_df <- read.csv("tpm.csv",header = TRUE,as.is = TRUE,row.names = 1) # CHANGE HERE the input file name
+
+
+tpm_df <- tpm_df + 0.001
+tpmlog <- log2(tpm_df)
+tpmlog$ensembl_gene_id <- row.names(tpmlog)
+tpmlog <- tpmlog %>% select(ensembl_gene_id,everything()) ##make sure biomart is not loaded, it creates problems with dplyr
+write.csv(tpmlog,"example_tpm_PC0.001_log2.csv",quote=FALSE,row.names = FALSE) ##CHANGE HERE the output file name
+
+
+## try http:// if https:// URLs are not supported
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("biomaRt")
+library(biomaRt) #important to load it after
+fileName <- "example_tpm_PC0.001_log2.csv"
+#fileName <- "tpm.csv"
+annotation("hsapiens_gene_ensembl",fileName,fileout)
+
+
+library(ggplot2)
+library(reshape)
+data_melted <- melt(tpmlog)
+p <- ggplot(data_melted,aes(x=value, col= variable)) + geom_density() + theme_bw() + theme(legend.position = "None")
+plot(p)
+
+##if you want to save the plot in a pdf file - uncomment the following
+pdf("density_plot_PC0.001.pdf")
+plot(p)
+dev.off()
