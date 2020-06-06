@@ -1,3 +1,9 @@
+
+grep -nH "estimated average fragment length" logfiles/*.log.txt > results/fragLength.csv
+
+
+
+
 Hi Afonso,
  
 Could we build into the RNAseq pipeline the extraction of average fragment length, too, please?
