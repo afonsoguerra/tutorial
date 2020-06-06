@@ -30,6 +30,7 @@ apt-get -y install r-base-core
 
 ## Install required R packages
 R --slave -e 'install.packages("BiocManager", dependencies=TRUE, repos = "http://cran.us.r-project.org")'
+R --slave -e 'install.packages("textshape", dependencies=TRUE, repos = "http://cran.us.r-project.org")'
 R --slave -e 'BiocManager::install("tximport")'
 R --slave -e 'BiocManager::install("rhdf5")'
 
@@ -38,6 +39,10 @@ R --slave -e 'BiocManager::install("biomaRt")'
 
 R --slave -e 'BiocManager::install("reshape")'
 R --slave -e 'BiocManager::install("dplyr")'
+R --slave -e 'BiocManager::install("plyr")'
+R --slave -e 'BiocManager::install("data.table")'
+R --slave -e 'BiocManager::install("ggplot2")'
+
 
 cd /usr/bin
 wget "https://github.com/pachterlab/kallisto/releases/download/v0.46.1/kallisto_linux-v0.46.1.tar.gz"
