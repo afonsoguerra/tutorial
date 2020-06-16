@@ -26,8 +26,9 @@ if(!-e ".container") {
 my $uclID = `cat .ucluser`;
 chomp($uclID);
 
-my $server = "rsync -Puva $uclID\@live.rd.ucl.ac.uk:";
-my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd002u-mnour10/RNAseq/fastq/';
+my $server = "rsync -Puva --copy-links $uclID\@live.rd.ucl.ac.uk:";
+#my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd00sk-jague49/200425_NB501045_0325_AHGP8CBGXC_NextSeq_Run_325_Weight/fastqLinks/';
+my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd00sk-jague49/200425_NB501045_0325_AHGP8CBGXC_NextSeq_Run_325_Weight/';
 
 
 my $CONTAINER = `cat .container`;
@@ -95,10 +96,11 @@ my $qsubHere = <<"QSUB";
 
 mkdir -p /scratch0/$uclID/\$JOB_ID/
 #echo "DEBUG"
-${server}${RDSPATH}${sample}*.fastq.gz /scratch0/$uclID/\$JOB_ID/
+${server}${RDSPATH}${sample}/${sample}*.fq.gz /scratch0/$uclID/\$JOB_ID/
+#${server}${RDSPATH}${sample}*.fq.gz /scratch0/$uclID/\$JOB_ID/
 ls -lthr /scratch0/$uclID/\$JOB_ID/
 
-time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}*_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}*_R2*.fastq.gz
+time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}*_1*.fq.gz /scratch0/$uclID/\$JOB_ID/${sample}*_2*.fq.gz
 
 rm -rf /scratch0/$uclID/\$JOB_ID/${sample}*
 
