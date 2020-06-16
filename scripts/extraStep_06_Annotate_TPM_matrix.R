@@ -1,4 +1,6 @@
 
+Sys.setenv(XDG_CACHE_HOME="/tmp")
+Sys.getenv(x="BIOMART_CACHE")
 
 #Equaliser - if number of genes differs in the TPM files (different Ensembl versions)
 # Based on agilp with a few edits for RNAseq
