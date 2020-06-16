@@ -2,7 +2,7 @@ rm(list=ls())
 library(dplyr)
 library(textshape)
 
-working.directory <- "/home/afonso/OneDriveUCL/UCL-Work2/PGU/PGU2_RNAseq_Weight/PGU2_CWeight"
+working.directory <- getwd()
 input.file <- "Annotatedexample_tpm_PC0.001_log2.csv"
 output.file <- "example_tpm_PC0.001_log2_genesymbol_dedup.csv"
 
