@@ -13,14 +13,14 @@ print STDERR "\nPlease wait a moment while we check for the needed software... \
 
 #Download Singularity Container if not there. 
 
-if (!-e "tutorial_latest.sif") {
-	system("singularity pull shub://afonsoguerra/tutorial");
+#if (!-e "tutorial_latest.sif") {
+	system("singularity pull --force shub://afonsoguerra/tutorial");
 	system("singularity exec tutorial_latest.sif ls /");
    system("echo \"$here/tutorial_latest.sif\" > .container");
-}
-else {
-	print STDERR "It seems you have been here before... nice to see you again!\n";
-}
+#}
+#else {
+#	print STDERR "It seems you have been here before... nice to see you again!\n";
+#}
 
 #Ask about ensembl references that might be needed
 
