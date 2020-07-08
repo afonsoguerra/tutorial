@@ -19,9 +19,14 @@ my $KALLISTO = "singularity exec $CONTAINER kallisto ";
 #Check for latest versions
 
 system("$WGET --spider --no-remove-listing -q ftp://ftp.ensembl.org/pub/");
-my $latestReleases = ` cat .listing | grep release | tail -n 3 | rev | cut -b -24 | rev`;
-system("rm -rf .listing");
+#my $latestReleases = ` cat .listing | grep release | sort -g | tail -n 3 | rev | cut -b -24 | rev`;
+my $latestReleases = ` cat .listing | grep release-100 | tail -n 3 | rev | cut -b -24 | rev`;
+#my $latestReleases = ` cat .listing | grep -oP "release-\d{2,3}\$" | sort -g | tail -n 3 | rev | cut -b -24 | rev`;
+#my $latestReleases = ` cat .listing | grep -oP "release-\d{2,3}\$" | sort -g | tail -n 3 | rev | cut -b -24 | rev`;
+#my $latestReleases = ` cat .listing | grep -oP "release-100" | sort -g | tail -n 3 `;
+#system("rm -rf .listing");
 
+#exit();
 
 print STDERR "\n\nWelcome to the script to download and index Ensembl genomes\n\n";
 
