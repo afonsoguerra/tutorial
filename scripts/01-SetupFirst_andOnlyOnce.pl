@@ -14,7 +14,7 @@ print STDERR "\nPlease wait a moment while we check for the needed software... \
 #Download Singularity Container if not there. 
 
 #Consider deleting singularity cache before running this
-system("rm -rf ~/.singularity/cache/") ;
+system("rm -rf ~/.singularity/cache/ \"$here/tutorial_latest.sif\"") ;
 
 #if (!-e "tutorial_latest.sif") {
 	system("singularity pull --force shub://afonsoguerra/tutorial");
