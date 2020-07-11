@@ -18,3 +18,4 @@ scripts/.container
 scripts/.csuser
 scripts/.kallistoindex
 scripts/RNAseq_Matrix_Generation_Script.R
+.vstags

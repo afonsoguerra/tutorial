@@ -20,11 +20,9 @@ my $KALLISTO = "singularity exec $CONTAINER kallisto ";
 
 system("$WGET --spider --no-remove-listing -q ftp://ftp.ensembl.org/pub/");
 #my $latestReleases = ` cat .listing | grep release | sort -g | tail -n 3 | rev | cut -b -24 | rev`;
-my $latestReleases = ` cat .listing | grep release-100 | tail -n 3 | rev | cut -b -24 | rev`;
-#my $latestReleases = ` cat .listing | grep -oP "release-\d{2,3}\$" | sort -g | tail -n 3 | rev | cut -b -24 | rev`;
-#my $latestReleases = ` cat .listing | grep -oP "release-\d{2,3}\$" | sort -g | tail -n 3 | rev | cut -b -24 | rev`;
-#my $latestReleases = ` cat .listing | grep -oP "release-100" | sort -g | tail -n 3 `;
-#system("rm -rf .listing");
+my $latestReleases = ` cat .listing | grep -oP "[A-Za-s]{3}\ \d{2}\ +\S{4,5}\ release-\d{2,3}" | sort -t '-' -g -k2,2 | tail -n 5`;
+
+system("rm -rf .listing");
 
 #exit();
 
