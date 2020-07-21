@@ -22,6 +22,11 @@ if(!-e ".container") {
    die "It appears you are trying to run this script without first running the earlier setup scripts. Please run everything in order and try again.\n";
 }
 
+if(-e "$oneup/results/rawcounts.csv") {
+   print STDERR "Warning: A previous run is already present in the results directory. To avoid unintended consequences, please move those results (and logfiles) before starting a new run.\n";
+   exit(0);
+}
+
 
 my $CONTAINER = `cat .container`;
 chomp($CONTAINER);
