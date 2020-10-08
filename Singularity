@@ -33,6 +33,7 @@ R --slave -e 'install.packages("BiocManager", dependencies=TRUE, repos = "http:/
 R --slave -e 'install.packages("textshape", dependencies=TRUE, repos = "http://cran.us.r-project.org")'
 R --slave -e 'BiocManager::install("tximport")'
 R --slave -e 'BiocManager::install("rhdf5")'
+R --slave -e 'BiocManager::install("readr")'
 
 R --slave -e 'BiocManager::install("DESeq2")'
 R --slave -e 'BiocManager::install("biomaRt")'
