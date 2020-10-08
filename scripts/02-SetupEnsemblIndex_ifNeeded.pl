@@ -42,7 +42,7 @@ my $archiveHostString = 'www.ensembl.org'; #Use the latest/main site by default
 
 if($ensVer ne $latest){
    #Regenerate and Parse Ensembl Archive list
-   open(IN, 'curl \'https://www.ensembl.org/Help/ArchiveList\' | grep .archive.ensembl.org | sed -e \'s/li>/\n/g\' | grep cp-external | grep GRCh | egrep -o \'Ensembl ..: ... 20..\' | tr -d \':\' | ') or die "Could not retrieve archive list file: $!\n";
+   open(IN, 'curl \'https://www.ensembl.org/Help/ArchiveList\' | grep .archive.ensembl.org | sed -e \'s/li>/\n/g\' | grep cp-external | grep GRCh | egrep -o \'Ensembl .*: ... 20..\' | tr -d \':\' | ') or die "Could not retrieve archive list file: $!\n";
 
    my $archive = 'NA';
 
@@ -50,6 +50,8 @@ if($ensVer ne $latest){
       chomp($line);
       next if($line eq "");
       my @data = split(" ", $line);
+
+      print STDERR "DEBUG: @data\n";
 
       if($data[1] eq $ensVer) {
          $archive = $data[2].$data[3];
@@ -199,7 +201,7 @@ open(QSUB, "| qsub") or die;
    print QSUB $qsubHere;
 close QSUB;
 
-open(DBG, ".debug.qsub") or die;
+open(DBG, ">.debug.qsub") or die;
    print DBG $qsubHere;
 close DBG;
 
