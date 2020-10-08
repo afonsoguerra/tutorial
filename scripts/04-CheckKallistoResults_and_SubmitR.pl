@@ -106,12 +106,13 @@ singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/ex
 QSUB
 
 
-
 open(QSUB, "| qsub") or die;
    print QSUB $qsubHere;
 close QSUB;
 
-
+open(DBG, ".debug.qsub") or die;
+   print DBG $qsubHere;
+close DBG;
 
 print STDERR "Happy Days! Since you are seeing this message, all samples appear to have successfully finished the previous steps.\nFurthermore, R is now queued for running to create the final data matrices for this run. Thanks for using the pipeline, have a great day!\n";
 

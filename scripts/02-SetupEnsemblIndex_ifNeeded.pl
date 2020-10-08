@@ -20,10 +20,10 @@ my $KALLISTO = "singularity exec $CONTAINER kallisto ";
 
 system("$WGET --spider --no-remove-listing -q ftp://ftp.ensembl.org/pub/");
 #my $latestReleases = ` cat .listing | grep release | sort -g | tail -n 3 | rev | cut -b -24 | rev`;
-my $latestReleases = `cat .listing | grep -oP "[A-Za-s]{3}\\ \\d{2}\\ +\\S{4,5}\\ release-\\d{2,3}" | sort -t '-' -g -k2,2 | tail -n 5`;
+my $latestReleases = `cat .listing | grep -oP "[A-Za-z]{3}\\ \\d{2}\\ +\\S{4,5}\\ release-\\d{2,3}" | sort -t '-' -g -k2,2 | tail -n 5`;
 
 system("rm -rf .listing");
-
+#print $latestReleases;
 #exit();
 
 print STDERR "\n\nWelcome to the script to download and index Ensembl genomes\n\n";
@@ -198,6 +198,10 @@ QSUB
 open(QSUB, "| qsub") or die;
    print QSUB $qsubHere;
 close QSUB;
+
+open(DBG, ".debug.qsub") or die;
+   print DBG $qsubHere;
+close DBG;
 
 
 print STDERR "The index has now been queued for processing, you can proceed setting up your run. If the index is not ready when you submit the main samples, they will be patient and wait.\n";
