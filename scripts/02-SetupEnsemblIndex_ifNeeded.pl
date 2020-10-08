@@ -51,7 +51,7 @@ if($ensVer ne $latest){
       next if($line eq "");
       my @data = split(" ", $line);
 
-      print STDERR "DEBUG: @data\n";
+      #print STDERR "DEBUG: @data\n";
 
       if($data[1] eq $ensVer) {
          $archive = $data[2].$data[3];
@@ -120,7 +120,8 @@ t2g<-t2g[,c(ncol(t2g),1:(ncol(t2g)-1))]
 
 #Let's use tximport to summarize results into genes
 kallisto.dir<-paste0(accessions)
-kallisto.files<-file.path(kallisto.dir,"abundance.tsv")
+#kallisto.files<-file.path(kallisto.dir,"abundance.tsv")
+kallisto.files<-file.path(kallisto.dir,"abundance.h5")
 names(kallisto.files)<- accessions
 tx.kallisto <- tximport(kallisto.files, type = "kallisto", tx2gene = t2g, countsFromAbundance ="no")
 
