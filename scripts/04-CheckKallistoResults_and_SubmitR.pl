@@ -83,8 +83,8 @@ my $qsubHere = <<"QSUB";
 #\$ -S /bin/bash
 #\$ -o $oneup/logfiles/make_matrix.log.txt
 #\$ -e $oneup/logfiles/make_matrix.log.txt
-#\$ -l h_rt=01:00:00
-#\$ -l tmem=11.9G,h_vmem=11.9G
+#\$ -l h_rt=06:00:00
+#\$ -l tmem=22.9G,h_vmem=22.9G
 #\$ -N make_matrix
 #\$ -hold_jid kallisto
 #\$ -wd $oneup/results/
