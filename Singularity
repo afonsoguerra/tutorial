@@ -53,6 +53,10 @@ tar xvf kallisto_linux-v0.46.1.tar.gz
 rm -rf kallisto_linux-v0.46.1.tar.gz
 rm -rf kallisto/test/
 
+cd /usr/bin
+wget http://opengene.org/fastp/fastp
+chmod a+x ./fastp
+
 cd /
 
 git clone https://github.com/afonsoguerra/tutorial.git
