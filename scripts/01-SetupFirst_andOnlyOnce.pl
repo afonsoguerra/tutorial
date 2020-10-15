@@ -11,9 +11,14 @@ my $prompt = &promptUser("Press Enter now to continue the ", "setup");
 
 print STDERR "\nPlease wait a moment while we check for the needed software... \n";
 
-print STDERR "\nConnecting to git. Please fill in your github username and password if needed... \n";
 
-system("git pull");
+#Skip checking for git updates if this is the first time the script is run
+if(-e '.ucluser') {
+	print STDERR "\nConnecting to git. Please fill in your github username and password if needed... \n";
+	system("git pull");
+}
+
+
 #Download Singularity Container if not there. 
 
 print STDERR "\nConnecting to singularity. Please wait... \n";
