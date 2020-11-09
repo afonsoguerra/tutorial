@@ -25,3 +25,7 @@ scripts/03-Setup_Run_and_Submit.covid20-281.pl
 scripts/03-Setup_Run_and_Submit.pgu8_wall20.pl
 .debug.qsub
 
+ref/.biomaRt/*
+scripts/jarbas.sh
+scripts/03-Setup_Run_and_Submit.pgu6.pl
+scripts/Makefile
