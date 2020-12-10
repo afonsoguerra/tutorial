@@ -19,9 +19,12 @@ my $KALLISTO = "singularity exec $CONTAINER kallisto ";
 #Check for latest versions
 
 system("$WGET --spider --no-remove-listing -q ftp://ftp.ensembl.org/pub/");
-my $latestReleases = ` cat .listing | grep release | tail -n 3 | rev | cut -b -24 | rev`;
-system("rm -rf .listing");
+#my $latestReleases = ` cat .listing | grep release | sort -g | tail -n 3 | rev | cut -b -24 | rev`;
+my $latestReleases = `cat .listing | grep -oP "[A-Za-z]{3}\\ \\d{2}\\ +\\S{4,5}\\ release-\\d{2,3}" | sort -t '-' -g -k2,2 | tail -n 5`;
 
+system("rm -rf .listing");
+#print $latestReleases;
+#exit();
 
 print STDERR "\n\nWelcome to the script to download and index Ensembl genomes\n\n";
 
@@ -39,7 +42,7 @@ my $archiveHostString = 'www.ensembl.org'; #Use the latest/main site by default
 
 if($ensVer ne $latest){
    #Regenerate and Parse Ensembl Archive list
-   open(IN, 'curl \'https://www.ensembl.org/Help/ArchiveList\' | grep .archive.ensembl.org | sed -e \'s/li>/\n/g\' | grep cp-external | grep GRCh | egrep -o \'Ensembl ..: ... 20..\' | tr -d \':\' | ') or die "Could not retrieve archive list file: $!\n";
+   open(IN, 'curl \'https://www.ensembl.org/Help/ArchiveList\' | grep .archive.ensembl.org | sed -e \'s/li>/\n/g\' | grep cp-external | grep GRCh | egrep -o \'Ensembl .*: ... 20..\' | tr -d \':\' | ') or die "Could not retrieve archive list file: $!\n";
 
    my $archive = 'NA';
 
@@ -47,6 +50,8 @@ if($ensVer ne $latest){
       chomp($line);
       next if($line eq "");
       my @data = split(" ", $line);
+
+      #print STDERR "DEBUG: @data\n";
 
       if($data[1] eq $ensVer) {
          $archive = $data[2].$data[3];
@@ -115,7 +120,8 @@ t2g<-t2g[,c(ncol(t2g),1:(ncol(t2g)-1))]
 
 #Let's use tximport to summarize results into genes
 kallisto.dir<-paste0(accessions)
-kallisto.files<-file.path(kallisto.dir,"abundance.tsv")
+#kallisto.files<-file.path(kallisto.dir,"abundance.tsv")
+kallisto.files<-file.path(kallisto.dir,"abundance.h5")
 names(kallisto.files)<- accessions
 tx.kallisto <- tximport(kallisto.files, type = "kallisto", tx2gene = t2g, countsFromAbundance ="no")
 
@@ -195,6 +201,10 @@ QSUB
 open(QSUB, "| qsub") or die;
    print QSUB $qsubHere;
 close QSUB;
+
+open(DBG, ">.debug.qsub") or die;
+   print DBG $qsubHere;
+close DBG;
 
 
 print STDERR "The index has now been queued for processing, you can proceed setting up your run. If the index is not ready when you submit the main samples, they will be patient and wait.\n";

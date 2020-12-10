@@ -12,7 +12,7 @@ apt-get -y update
 
 apt-get install -y apt-transport-https software-properties-common apt-utils wget curl rsync
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
+add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'
 
 apt-get -y update
 apt-get -y upgrade
@@ -33,8 +33,11 @@ R --slave -e 'install.packages("BiocManager", dependencies=TRUE, repos = "http:/
 R --slave -e 'install.packages("textshape", dependencies=TRUE, repos = "http://cran.us.r-project.org")'
 R --slave -e 'BiocManager::install("tximport")'
 R --slave -e 'BiocManager::install("rhdf5")'
+R --slave -e 'BiocManager::install("readr")'
 
 R --slave -e 'BiocManager::install("DESeq2")'
+
+#Note: Minimum biomaRt version now needed: https://support.bioconductor.org/p/134731/
 R --slave -e 'BiocManager::install("biomaRt")'
 
 R --slave -e 'BiocManager::install("reshape")'
@@ -51,6 +54,10 @@ wget "https://github.com/pachterlab/kallisto/releases/download/v0.46.1/kallisto_
 tar xvf kallisto_linux-v0.46.1.tar.gz
 rm -rf kallisto_linux-v0.46.1.tar.gz
 rm -rf kallisto/test/
+
+cd /usr/bin
+wget http://opengene.org/fastp/fastp
+chmod a+x ./fastp
 
 cd /
 

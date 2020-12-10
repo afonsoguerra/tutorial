@@ -22,6 +22,11 @@ if(!-e ".container") {
    die "It appears you are trying to run this script without first running the earlier setup scripts. Please run everything in order and try again.\n";
 }
 
+if(-e "$oneup/results/rawcounts.csv") {
+   print STDERR "Warning: A previous run is already present in the results directory. To avoid unintended consequences, please move those results (and logfiles) before starting a new run.\n";
+   exit(0);
+}
+
 
 my $CONTAINER = `cat .container`;
 chomp($CONTAINER);
@@ -78,8 +83,8 @@ my $qsubHere = <<"QSUB";
 #\$ -S /bin/bash
 #\$ -o $oneup/logfiles/make_matrix.log.txt
 #\$ -e $oneup/logfiles/make_matrix.log.txt
-#\$ -l h_rt=01:00:00
-#\$ -l tmem=11.9G,h_vmem=11.9G
+#\$ -l h_rt=06:00:00
+#\$ -l tmem=22.9G,h_vmem=22.9G
 #\$ -N make_matrix
 #\$ -hold_jid kallisto
 #\$ -wd $oneup/results/
@@ -101,11 +106,13 @@ singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/ex
 QSUB
 
 
-
 open(QSUB, "| qsub") or die;
    print QSUB $qsubHere;
 close QSUB;
 
+open(DBG, ">.debug.qsub") or die;
+   print DBG $qsubHere;
+close DBG;
 
 
 print STDERR "Happy Days! Since you are seeing this message, all samples appear to have successfully finished the previous steps.\nFurthermore, R is now queued for running to create the final data matrices for this run. Thanks for using the pipeline, have a great day!\n";
