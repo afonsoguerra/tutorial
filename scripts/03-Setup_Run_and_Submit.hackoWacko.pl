@@ -37,7 +37,12 @@ my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd002u-mnour10/RNAseq/fastq/';
 
 my $CONTAINER = `cat .container`;
 chomp($CONTAINER);
-;
+
+if(!-e $CONTAINER) {
+   die "It appears you are trying to run this script without first running the earlier setup scripts. Please run everything in order and try again.\n";
+}
+
+
 my $KALLISTO = "singularity exec -B /scratch0/$uclID/ $CONTAINER kallisto ";
 
 #Sort out input
@@ -95,7 +100,8 @@ mkdir -p $oneup/dataFiles/${ttt}/
 ${server}${RDSPATH}${sample}*.fastq.gz $oneup/dataFiles/${ttt}/
 ls -lthr $oneup/dataFiles/${ttt}/${sample}*
 
-time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ $oneup/dataFiles/${ttt}/${sample}*_R1*.fastq.gz $oneup/dataFiles/${ttt}/${sample}*_R2*.fastq.gz
+#time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ $oneup/dataFiles/${ttt}/${sample}*_R1*.fastq.gz $oneup/dataFiles/${ttt}/${sample}*_R2*.fastq.gz
+time $KALLISTO quant -i $kallistoindex -o $oneup/results/${sample}/ $oneup/dataFiles/${ttt}/${sample}*_R1*.fastq.gz $oneup/dataFiles/${ttt}/${sample}*_R2*.fastq.gz
 rm -rf $oneup/dataFiles/${ttt}/${sample}*
 
 
@@ -108,43 +114,12 @@ close QSUB;
 }
 
 
-################### Setup email alert
-
-my $qsubHere = <<"QSUB";
-#!/bin/bash -l
-#\$ -S /bin/bash
-#\$ -o $oneup/logfiles/report.log.txt
-#\$ -e $oneup/logfiles/report.log.txt
-#\$ -l h_rt=00:10:00
-#\$ -l tmem=1.9G,h_vmem=1.9G
-#\$ -N report
-#\$ -hold_jid kallisto
-#\$ -cwd
-#\$ -V
-#\$ -R y
-
-date
-echo "All jobs finished"
-date
-
-function finish {
-   (echo "Subject: Latest RNAseq run" ; echo ; echo "All samples submitted to the RNAseq pipeline have now finished on the cluster. Please go and run the last steps to merge the data." ) | sendmail ${uclID}\@ucl.ac.uk
-}
-
-trap finish EXIT ERR
-
-QSUB
-
-open(QSUB, "| qsub") or die;
-   print QSUB $qsubHere;
-close QSUB;
 
 
 
 
 
-
-print STDERR "All samples should now have been submitted for processing. Please check if they finished by running qstat, and once they all exit (qstat returns nothing), Run the next script in the pipeline to check the log files to see if anything failed and continue the processing...\n";
+print STDERR "All samples should now have finished processing...\n";
 
 
 
