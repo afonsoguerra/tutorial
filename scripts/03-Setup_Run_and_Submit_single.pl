@@ -164,7 +164,10 @@ close QSUB;
 
 
 
+
+
 print STDERR "All samples should now have been submitted for processing. Please check if they finished by running qstat, and once they all exit (qstat returns nothing), Run the next script in the pipeline to check the log files to see if anything failed and continue the processing...\n";
+
 
 
 sub sampleWaiter {
@@ -194,6 +197,7 @@ sub countProc {
 
    return $cnt;
 }
+
 
 
 sub promptUser {
