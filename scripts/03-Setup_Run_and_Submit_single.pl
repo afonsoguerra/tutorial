@@ -31,14 +31,14 @@ if(-e "$oneup/results/rawcounts.csv") {
 my $uclID = `cat .ucluser`;
 chomp($uclID);
 
-my $server = "rsync -Puva $uclID\@live.rd.ucl.ac.uk:";
+my $server = "rsync -Puva transfer02:";
 my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd002u-mnour10/RNAseq/fastq/';
 
 
 my $CONTAINER = `cat .container`;
 chomp($CONTAINER);
 ;
-my $KALLISTO = "singularity exec -B /scratch0/$uclID/ $CONTAINER kallisto ";
+my $KALLISTO = "singularity exec -B $oneup/TEMP/ $CONTAINER kallisto ";
 
 #Sort out input
 die "Usage: $0 RunFileSpecsFile [RDS PATH]\n" if(!@ARGV);
@@ -98,17 +98,17 @@ my $qsubHere = <<"QSUB";
 #\$ -V
 #\$ -R y
 
-mkdir -p /scratch0/$uclID/\$JOB_ID/
+mkdir -p $oneup/TEMP/\$JOB_ID/
 #echo "DEBUG"
-${server}${RDSPATH}${sample}*.fastq.gz /scratch0/$uclID/\$JOB_ID/
-ls -lthr /scratch0/$uclID/\$JOB_ID/
+${server}${RDSPATH}${sample}*.fastq.gz $oneup/TEMP/\$JOB_ID/
+ls -lthr $oneup/TEMP/\$JOB_ID/
 
-time $KALLISTO quant -i $kallistoindex -l 250.0 -s 50.0 --single  -b 5 -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}*_R1*.fastq.gz
+time $KALLISTO quant -i $kallistoindex -l 250.0 -s 50.0 --single -b 5 -o $oneup/results/${sample}/ $oneup/TEMP/\$JOB_ID/${sample}*.fastq.gz
 
-rm -rf /scratch0/$uclID/\$JOB_ID/${sample}*
+rm -rf $oneup/TEMP/\$JOB_ID/${sample}*
 
 function finish {
-    rm -rf /scratch0/$uclID/\$JOB_ID/${sample}*
+    rm -rf $oneup/TEMP/\$JOB_ID/${sample}*
 }
 
 trap finish EXIT ERR
