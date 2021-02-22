@@ -13,6 +13,7 @@ my @temp = split('/',$here);
 my $asd = pop(@temp);
 my $oneup = join('/',@temp);
 
+my $maxSub = 100;
 
 if(!-e ".ucluser") {
    die "It appears you are trying to run this script without first running the earlier setup scripts. Please run everything in order and try again.\n";
@@ -31,14 +32,15 @@ if(-e "$oneup/results/rawcounts.csv") {
 my $uclID = `cat .ucluser`;
 chomp($uclID);
 
-my $server = "rsync -Puva transfer02:";
+my $server = "scp live.rd.ucl.ac.uk:";
 #my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd002u-mnour10/RNAseq/fastq/';
 my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd00w6-ekora92/AllFQU/';
+
 
 my $CONTAINER = `cat .container`;
 chomp($CONTAINER);
 
-my $KALLISTO = "singularity exec -B $oneup/TEMP/ $CONTAINER kallisto ";
+my $KALLISTO = "singularity exec -B $oneup $CONTAINER kallisto ";
 
 #Sort out input
 die "Usage: $0 RunFileSpecsFile [RDS PATH]\n" if(!@ARGV);
@@ -81,8 +83,14 @@ my $void2 = &promptUser("Using the index that was most recently setup [".basenam
 
 for my $sample (@samples) {
 
+
+&sampleWaiter("kallisto",$maxSub);
+
 system("mkdir -p $oneup/results/$sample/");
+system("mkdir -p $oneup/TEMP/");
 system("mkdir -p $oneup/logfiles/");
+system("${server}${RDSPATH}${sample}*.fastq.gz $oneup/TEMP/");
+
 
 my $qsubHere = <<"QSUB";
 #!/bin/bash -l
@@ -97,22 +105,23 @@ my $qsubHere = <<"QSUB";
 #\$ -V
 #\$ -R y
 
-mkdir -p $oneup/TEMP/\$JOB_ID/
-#echo "DEBUG"
-${server}${RDSPATH}${sample}*.fastq.gz $oneup/TEMP/\$JOB_ID/
-ls -lthr $oneup/TEMP/\$JOB_ID/
 
-time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ $oneup/TEMP/\$JOB_ID/${sample}*_R1*.fastq.gz $oneup/TEMP/\$JOB_ID/${sample}*_R2*.fastq.gz
 
-rm -rf $oneup/TEMP/\$JOB_ID/${sample}*
+ls -lthr $oneup/TEMP/
+
+time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ $oneup/TEMP/${sample}*_R1*.fastq.gz $oneup/TEMP/${sample}*_R2*.fastq.gz
+
+rm -rf $oneup/TEMP/${sample}*
 
 function finish {
-    rm -rf $oneup/TEMP/\$JOB_ID/${sample}*
+    rm -rf $oneup/TEMP/${sample}*
 }
 
 trap finish EXIT ERR
 
 QSUB
+
+
 
 open(QSUB, "| qsub") or die;
    print QSUB $qsubHere;
