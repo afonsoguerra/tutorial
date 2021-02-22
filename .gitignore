@@ -29,3 +29,4 @@ ref/.biomaRt/*
 scripts/jarbas.sh
 scripts/03-Setup_Run_and_Submit.pgu6.pl
 scripts/Makefile
+TEMP/*.gz

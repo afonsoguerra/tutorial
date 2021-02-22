@@ -13,7 +13,7 @@ my @temp = split('/',$here);
 my $asd = pop(@temp);
 my $oneup = join('/',@temp);
 
-my $maxSub = 30;
+my $maxSub = 8;
 
 if(!-e ".ucluser") {
    die "It appears you are trying to run this script without first running the earlier setup scripts. Please run everything in order and try again.\n";
@@ -139,12 +139,16 @@ sub sampleWaiter {
    my $procName = shift;
    my $procN = shift;
 
-   while (&countProc($procName) > $procN) {
-      print STDERR "[`date`] More than $procN things running, waiting a bit to avoid filling the temp space... "; 
+   my $running = &countProc($procName);
+   print STDERR "[".time()."] $running things running... \n"; 
+
+   while ($running >= $procN) {
+      print STDERR "[".time()."] There are already $running jobs running. Waiting a bit to avoid filling the temp space... \r"; 
       sleep(120);
+      $running = &countProc($procName);
    }
 
-
+   print STDERR "\n";
 }
 
 
