@@ -170,6 +170,34 @@ print STDERR "All samples should now have been submitted for processing. Please 
 
 
 
+sub sampleWaiter {
+
+   my $procName = shift;
+   my $procN = shift;
+
+   my $running = &countProc($procName);
+   print STDERR "[".time()."] $running things running... \n"; 
+
+   while ($running >= $procN) {
+      print STDERR "[".time()."] There are already $running jobs running. Waiting a bit to avoid filling the temp space... \r"; 
+      sleep(120);
+      $running = &countProc($procName);
+   }
+
+   print STDERR "\n";
+}
+
+
+
+sub countProc {
+   my $procName = shift;
+
+   my $cnt = `qstat | grep kallisto | wc -l`;
+   chomp($cnt);
+
+   return $cnt;
+}
+
 
 
 sub promptUser {
