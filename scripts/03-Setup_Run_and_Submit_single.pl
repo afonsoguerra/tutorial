@@ -13,7 +13,7 @@ my @temp = split('/',$here);
 my $asd = pop(@temp);
 my $oneup = join('/',@temp);
 
-my $maxSub = 8;
+my $maxSub = 100;
 
 if(!-e ".ucluser") {
    die "It appears you are trying to run this script without first running the earlier setup scripts. Please run everything in order and try again.\n";
