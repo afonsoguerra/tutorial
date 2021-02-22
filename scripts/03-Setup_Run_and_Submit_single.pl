@@ -31,7 +31,7 @@ if(-e "$oneup/results/rawcounts.csv") {
 my $uclID = `cat .ucluser`;
 chomp($uclID);
 
-my $server = "rsync -Puva transfer02:";
+my $server = "scp live.rd.ucl.ac.uk:";
 #my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd002u-mnour10/RNAseq/fastq/';
 my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd00w6-ekora92/AllFQU/';
 
@@ -39,7 +39,7 @@ my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd00w6-ekora92/AllFQU/';
 my $CONTAINER = `cat .container`;
 chomp($CONTAINER);
 
-my $KALLISTO = "singularity exec -B $oneup/TEMP/ $CONTAINER kallisto ";
+my $KALLISTO = "singularity exec -B $oneup $CONTAINER kallisto ";
 
 #Sort out input
 die "Usage: $0 RunFileSpecsFile [RDS PATH]\n" if(!@ARGV);
@@ -92,7 +92,6 @@ my $qsubHere = <<"QSUB";
 #\$ -e $oneup/logfiles/${sample}.log.txt
 #\$ -l h_rt=12:00:00
 #\$ -l mem=11.9G
-#\$ -l tscratch=10G
 #\$ -N  kallisto
 #\$ -hold_jid making_index_kallisto
 #\$ -wd $oneup/results/${sample}
