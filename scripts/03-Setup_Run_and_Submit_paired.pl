@@ -6,7 +6,7 @@ use warnings;
 use Data::Dumper;
 use File::Basename;
 
-my $here = `pwd`;
+my $here = `readlink -f .`;
 chomp($here);
 
 my @temp = split('/',$here);

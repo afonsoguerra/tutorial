@@ -6,7 +6,7 @@ use warnings;
 use Data::Dumper;
 use File::Basename;
 
-my $here = `pwd`;
+my $here = `readlink -f .`;
 chomp($here);
 
 my @temp = split('/',$here);
@@ -84,7 +84,7 @@ my $qsubHere = <<"QSUB";
 #\$ -o $oneup/logfiles/make_matrix.log.txt
 #\$ -e $oneup/logfiles/make_matrix.log.txt
 #\$ -l h_rt=06:00:00
-#\$ -l tmem=22.9G,h_vmem=22.9G
+#\$ -l mem=22.9G
 #\$ -N make_matrix
 #\$ -hold_jid kallisto
 #\$ -wd $oneup/results/
@@ -100,8 +100,8 @@ grep -nH "estimated average fragment length" $oneup/logfiles/*.log.txt > $oneup/
 singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/RNAseq_Matrix_Generation_Script.R 
 
 singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_05_makeSARtools_input.R 
-singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_06_Annotate_TPM_matrix.R 
-singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_07_deduplicate_TPM.R 
+#singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_06_Annotate_TPM_matrix.R 
+#singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_07_deduplicate_TPM.R 
 
 QSUB
 

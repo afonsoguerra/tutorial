@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-my $here = `pwd`;
+my $here = `readlink -f .`;
 chomp($here);
 
 my @temp = split('/',$here);
@@ -191,7 +191,7 @@ my $qsubHere = <<"QSUB";
 #\$ -o $oneup/logfiles/IndexingEnsembl-${ensSP}-${ensVer}.logfile.txt
 #\$ -e $oneup/logfiles/IndexingEnsembl-${ensSP}-${ensVer}.logfile.txt
 #\$ -l h_rt=04:00:00
-#\$ -l tmem=8.9G,h_vmem=8.9G
+#\$ -l mem=8.9G
 #\$ -N making_index_kallisto
 
 $KALLISTO index -i $OUT $FASTA

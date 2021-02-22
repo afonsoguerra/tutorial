@@ -6,7 +6,7 @@ use warnings;
 use Data::Dumper;
 use File::Basename;
 
-my $here = `pwd`;
+my $here = `readlink -f .`;
 chomp($here);
 
 my @temp = split('/',$here);
@@ -90,7 +90,7 @@ my $qsubHere = <<"QSUB";
 #\$ -o $oneup/logfiles/${sample}.log.txt
 #\$ -e $oneup/logfiles/${sample}.log.txt
 #\$ -l h_rt=12:00:00
-#\$ -l tmem=11.9G,h_vmem=11.9G
+#\$ -l mem=11.9G
 #\$ -l tscratch=10G
 #\$ -N  kallisto
 #\$ -hold_jid making_index_kallisto
