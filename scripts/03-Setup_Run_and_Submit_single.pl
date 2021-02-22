@@ -13,6 +13,7 @@ my @temp = split('/',$here);
 my $asd = pop(@temp);
 my $oneup = join('/',@temp);
 
+my $maxSub = 30;
 
 if(!-e ".ucluser") {
    die "It appears you are trying to run this script without first running the earlier setup scripts. Please run everything in order and try again.\n";
@@ -82,8 +83,14 @@ my $void2 = &promptUser("Using the index that was most recently setup [".basenam
 
 for my $sample (@samples) {
 
+
+&sampleWaiter("kallisto",$maxSub);
+
 system("mkdir -p $oneup/results/$sample/");
+system("mkdir -p $oneup/TEMP/");
 system("mkdir -p $oneup/logfiles/");
+system("${server}${RDSPATH}${sample}*.fastq.gz $oneup/TEMP/");
+
 
 my $qsubHere = <<"QSUB";
 #!/bin/bash -l
@@ -98,17 +105,16 @@ my $qsubHere = <<"QSUB";
 #\$ -V
 #\$ -R y
 
-mkdir -p $oneup/TEMP/\$JOB_ID/
-#echo "DEBUG"
-${server}${RDSPATH}${sample}*.fastq.gz $oneup/TEMP/\$JOB_ID/
-ls -lthr $oneup/TEMP/\$JOB_ID/
 
-time $KALLISTO quant -i $kallistoindex -l 250.0 -s 50.0 --single -b 5 -o $oneup/results/${sample}/ $oneup/TEMP/\$JOB_ID/${sample}*.fastq.gz
 
-rm -rf $oneup/TEMP/\$JOB_ID/${sample}*
+ls -lthr $oneup/TEMP/
+
+time $KALLISTO quant -i $kallistoindex -l 250.0 -s 50.0 --single -b 5 -o $oneup/results/${sample}/ $oneup/TEMP/${sample}*.fastq.gz
+
+rm -rf $oneup/TEMP/${sample}*
 
 function finish {
-    rm -rf $oneup/TEMP/\$JOB_ID/${sample}*
+    rm -rf $oneup/TEMP/${sample}*
 }
 
 trap finish EXIT ERR
@@ -128,7 +134,29 @@ close QSUB;
 print STDERR "All samples should now have been submitted for processing. Please check if they finished by running qstat, and once they all exit (qstat returns nothing), Run the next script in the pipeline to check the log files to see if anything failed and continue the processing...\n";
 
 
+sub sampleWaiter {
 
+   my $procName = shift;
+   my $procN = shift;
+
+   while (&countProc($procName) > $procN) {
+      print STDERR "[`date`] More than $procN things running, waiting a bit to avoid filling the temp space... "; 
+      sleep(120);
+   }
+
+
+}
+
+
+
+sub countProc {
+   my $procName = shift;
+
+   my $cnt = `qstat | grep kallisto | wc -l`;
+   chomp($cnt);
+
+   return $cnt;
+}
 
 
 sub promptUser {
