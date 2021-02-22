@@ -13,8 +13,8 @@ my $oneup = join('/',@temp);
 my $CONTAINER = `cat .container`;
 chomp($CONTAINER);
 
-my $WGET = "singularity exec $CONTAINER wget ";
-my $KALLISTO = "singularity exec $CONTAINER kallisto ";
+my $WGET = "singularity exec -B $oneup $CONTAINER wget ";
+my $KALLISTO = "singularity exec -B $oneup $CONTAINER kallisto ";
 
 #Check for latest versions
 
@@ -117,6 +117,7 @@ t2g$target_id <- paste(t2g$ensembl_transcript_id, t2g$transcript_version, sep=".
 t2g[,c("ensembl_transcript_id","transcript_version")] <- list(NULL) # delete the ensembl transcript ID and transcript version columns
 t2g <- dplyr::rename( t2g, gene_symbol = external_gene_name, full_name = description, biotype = transcript_biotype )
 t2g<-t2g[,c(ncol(t2g),1:(ncol(t2g)-1))]
+saveRDS(t2g,"t2g.rds")
 
 #Let's use tximport to summarize results into genes
 kallisto.dir<-paste0(accessions)
@@ -180,7 +181,9 @@ system("mkdir -p $oneup/ref/cluster/");
 #Download file
 if(!-e $FASTA) {
    system("$WGET --no-parent --no-remove-listing -O $FASTA ftp://ftp.ensembl.org/pub/release-${ensVer}/fasta/${ensSP}/cdna/*.all.fa.gz");
-   #ftp://ftp.ensembl.org/pub/release-98/fasta/danio_rerio/cdna/
+   #ftp://ftp.ensembl.org/pub/release-98/fasta/danio_rerio/cdna/   
+   #print STDERR ("$WGET --no-parent --no-remove-listing -O $FASTA ftp://ftp.ensembl.org/pub/release-${ensVer}/fasta/${ensSP}/cdna/*.all.fa.gz");
+
 }
 
 #Setup kallisto index run and set it going
