@@ -67,9 +67,11 @@ annotation = function(Species,datafile,fileout){
   #annotation
   bmdataset = toString(Species)
   #mart <- biomaRt::useMart(biomart = "ensembl", dataset =  "hsapiens_gene_ensembl", host ="http://jul2019.archive.ensembl.org")
-  mart=useMart(biomart="ENSEMBL_MART_ENSEMBL", dataset= bmdataset)
+  #mart=useMart(biomart="ENSEMBL_MART_ENSEMBL", dataset= bmdataset)
   #mart = useMart(biomart = "ENSEMBL_MART_ENSEMBL",dataset=bmdataset, host = "dec2016.archive.ensembl.org")
-  
+  #mart <- biomaRt::useMart(biomart="ensembl",dataset="hsapiens_gene_ensembl", host="nov2020.archive.ensembl.org") #102
+  mart <- biomaRt::useMart(biomart="ensembl",dataset="hsapiens_gene_ensembl", host="apr2020.archive.ensembl.org") #100
+
   #data2$ensembl_gene_id <- data2$V1; data2$V1 <- NULL
   ann <- biomaRt::getBM(attributes = c("ensembl_gene_id", "external_gene_name", "description", "gene_biotype"), filters="ensembl_gene_id",values=data2$ensembl_gene_id,mart = mart)
   #data2$ensembl_gene_id<-data2$Id

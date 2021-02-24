@@ -34,7 +34,7 @@ chomp($uclID);
 
 my $server = "scp live.rd.ucl.ac.uk:";
 my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd002u-mnour10/RNAseq/fastq/';
-=my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd00w6-ekora92/AllFQU/';
+#my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd00w6-ekora92/AllFQU/';
 
 
 my $CONTAINER = `cat .container`;

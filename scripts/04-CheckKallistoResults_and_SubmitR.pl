@@ -100,8 +100,8 @@ grep -nH "estimated average fragment length" $oneup/logfiles/*.log.txt > $oneup/
 singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/RNAseq_Matrix_Generation_Script.R 
 
 singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_05_makeSARtools_input.R 
-#singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_06_Annotate_TPM_matrix.R 
-#singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_07_deduplicate_TPM.R 
+singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_06_Annotate_TPM_matrix.R 
+singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_07_deduplicate_TPM.R 
 
 QSUB
 
