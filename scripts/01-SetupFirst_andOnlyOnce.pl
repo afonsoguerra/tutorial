@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 
-my $here = `pwd`;
+my $here = `readlink -f .`;
 chomp($here);
 
 
@@ -45,6 +45,7 @@ if(-e '.ucluser') {
 else {
    my $ucluser = &promptUser("Enter the main UCL username ");
    system("echo \"$ucluser\" > .ucluser");
+   #system("echo \"$ucluser\" > .csuser");
 }
 
 
@@ -60,9 +61,6 @@ else {
 }
 
 #print "$ucluser, $csuser\n";
-
-
-#system(
 
 
 

@@ -6,7 +6,7 @@ use warnings;
 use Data::Dumper;
 use File::Basename;
 
-my $here = `pwd`;
+my $here = `readlink -f .`;
 chomp($here);
 
 my @temp = split('/',$here);
@@ -52,6 +52,29 @@ close IN;
 
 print STDERR "Hold tight, we are now checking if your ".scalar(@samples)." samples have processed correctly and are ready for aggregation... (may take a bit)\n";
 
+my @failed;
+open(FAIL, ">failedSamples.txt") or die;
+
+for my $sample (@samples) {
+
+   my $logfile = "$oneup/logfiles/${sample}.log.txt";
+
+   #Check for fails
+   my $success = `grep -c bstrp $logfile`;
+   chomp($success);
+
+   if($success == 0){
+      print STDERR "ERROR: Sample $sample FAILED kallisto\n";
+      push(@failed, $sample);
+      print FAIL "$sample\n";
+   }
+}
+close FAIL;
+
+if(scalar(@failed) > 0){
+   die "ERROR: Unfortunately it appears that some of your samples [N=".scalar(@failed)."/".scalar(@samples)."] have failed to process correctly. For your convenience, these have been written to the failedSamples.txt file that can be used to re-submit them once the problem is corrected.\nPlease resolve the problem and re-start processing from the previous step\n";
+}
+
 
 
 # Add a script here for running the R bit
@@ -76,23 +99,23 @@ grep -nH "estimated average fragment length" $oneup/logfiles/*.log.txt > $oneup/
 
 singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/RNAseq_Matrix_Generation_Script.R 
 
-#singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_05_makeSARtools_input.R 
+singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_05_makeSARtools_input.R 
 #singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_06_Annotate_TPM_matrix.R 
 #singularity exec -B $oneup --no-home $CONTAINER R --vanilla -f $oneup/scripts/extraStep_07_deduplicate_TPM.R 
 
 QSUB
 
 
-open(QSUB, "| qsub") or die;
-   print QSUB $qsubHere;
-close QSUB;
+###open(QSUB, "| qsub") or die;
+#   print QSUB $qsubHere;
+#close QSUB;
 
 open(DBG, ">.debug.qsub") or die;
    print DBG $qsubHere;
 close DBG;
 
 
-print STDERR "Happy Days! Fingers crossed this worked...\nFurthermore, R is now queued for running to create the final data matrices for this run. Thanks for using the pipeline, have a great day!\n";
+print STDERR "Happy Days! Since you are seeing this message, all samples appear to have successfully finished the previous steps.\nFurthermore, R is now queued for running to create the final data matrices for this run. Thanks for using the pipeline, have a great day!\n";
 
 
 

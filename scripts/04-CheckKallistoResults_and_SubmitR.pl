@@ -6,13 +6,13 @@ use warnings;
 use Data::Dumper;
 use File::Basename;
 
-my $here = `pwd`;
+my $here = `readlink -f .`;
 chomp($here);
 
 my @temp = split('/',$here);
 my $asd = pop(@temp);
 my $oneup = join('/',@temp);
-
+my $proj = "/cluster/project9/MaddyRNAseq";
 
 if(!-e ".ucluser") {
    die "It appears you are trying to run this script without first running the earlier setup scripts. Please run everything in order and try again.\n";
@@ -33,7 +33,7 @@ chomp($CONTAINER);
 
 
 #Sort out input
-die "Usage: $0 RunFileSpecsFile [RDS PATH]\n" if(!@ARGV);
+die "Usage: $0 RunFileSpecsFile\n" if(!@ARGV);
 my $filename = $ARGV[0];
 
 #Check for a sample list file
