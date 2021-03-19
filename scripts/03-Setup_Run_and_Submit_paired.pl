@@ -12,6 +12,7 @@ chomp($here);
 my @temp = split('/',$here);
 my $asd = pop(@temp);
 my $oneup = join('/',@temp);
+my $proj = "/cluster/project9/MaddyRNAseq";
 
 my $maxSub = 100;
 
@@ -32,15 +33,14 @@ if(-e "$oneup/results/rawcounts.csv") {
 my $uclID = `cat .ucluser`;
 chomp($uclID);
 
-my $server = "scp live.rd.ucl.ac.uk:";
+my $server = "scp $uclID\@live.rd.ucl.ac.uk:";
 my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd002u-mnour10/RNAseq/fastq/';
-#my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd00w6-ekora92/AllFQU/';
 
 
 my $CONTAINER = `cat .container`;
 chomp($CONTAINER);
 
-my $KALLISTO = "singularity exec -B $oneup $CONTAINER kallisto ";
+my $KALLISTO = "singularity exec -B $proj -B $oneup $CONTAINER kallisto ";
 
 #Sort out input
 die "Usage: $0 RunFileSpecsFile [RDS PATH]\n" if(!@ARGV);
@@ -87,9 +87,9 @@ for my $sample (@samples) {
 &sampleWaiter("kallisto",$maxSub);
 
 system("mkdir -p $oneup/results/$sample/");
-system("mkdir -p $oneup/TEMP/");
+system("mkdir -p $proj/TEMP/");
 system("mkdir -p $oneup/logfiles/");
-system("${server}${RDSPATH}${sample}*.fastq.gz $oneup/TEMP/");
+system("${server}${RDSPATH}${sample}*.fastq.gz $proj/TEMP/");
 
 
 my $qsubHere = <<"QSUB";
@@ -98,7 +98,7 @@ my $qsubHere = <<"QSUB";
 #\$ -o $oneup/logfiles/${sample}.log.txt
 #\$ -e $oneup/logfiles/${sample}.log.txt
 #\$ -l h_rt=12:00:00
-#\$ -l mem=11.9G
+#\$ -l tmem=11.9G,h_vmem=11.9G
 #\$ -N  kallisto
 #\$ -hold_jid making_index_kallisto
 #\$ -wd $oneup/results/${sample}
@@ -107,14 +107,14 @@ my $qsubHere = <<"QSUB";
 
 
 
-ls -lthr $oneup/TEMP/
+ls -lthr $proj/TEMP/
 
-time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ $oneup/TEMP/${sample}*_R1*.fastq.gz $oneup/TEMP/${sample}*_R2*.fastq.gz
+time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ $proj/TEMP/${sample}*_R1*.fastq.gz $proj/TEMP/${sample}*_R2*.fastq.gz
 
-rm -rf $oneup/TEMP/${sample}*
+rm -rf $proj/TEMP/${sample}*
 
 function finish {
-    rm -rf $oneup/TEMP/${sample}*
+    rm -rf $proj/TEMP/${sample}*
 }
 
 trap finish EXIT ERR
@@ -138,7 +138,7 @@ my $qsubHere = <<"QSUB";
 #\$ -o $oneup/logfiles/report.log.txt
 #\$ -e $oneup/logfiles/report.log.txt
 #\$ -l h_rt=00:10:00
-#\$ -l mem=1.9G
+#\$ -l tmem=1.9G,h_vmem=1.9G
 #\$ -N report
 #\$ -hold_jid kallisto
 #\$ -cwd
@@ -150,7 +150,7 @@ echo "All jobs finished"
 date
 
 function finish {
-   (echo "Subject: Latest RNAseq run" ; echo ; echo "All samples submitted to the RNAseq pipeline have now finished on the cluster. Please go and run the last steps to merge the data." ) | sendmail ${uclID}\@ucl.ac.uk
+   (echo "Subject: Latest RNAseq run" ; echo ; echo "All samples submitted to the RNAseq pipeline have now finished on the cluster. Please go and run the last steps to merge the data." ) | ssh rds sendmail ${uclID}\@ucl.ac.uk
 }
 
 trap finish EXIT ERR

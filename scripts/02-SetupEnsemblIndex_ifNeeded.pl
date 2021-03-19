@@ -13,8 +13,8 @@ my $oneup = join('/',@temp);
 my $CONTAINER = `cat .container`;
 chomp($CONTAINER);
 
-my $WGET = "singularity exec -B $oneup $CONTAINER wget ";
-my $KALLISTO = "singularity exec -B $oneup $CONTAINER kallisto ";
+my $WGET = "singularity exec -B /cluster/project9/MaddyRNAseq -B $oneup $CONTAINER wget ";
+my $KALLISTO = "singularity exec -B /cluster/project9/MaddyRNAseq -B $oneup $CONTAINER kallisto ";
 
 #Check for latest versions
 
@@ -118,6 +118,8 @@ t2g[,c("ensembl_transcript_id","transcript_version")] <- list(NULL) # delete the
 t2g <- dplyr::rename( t2g, gene_symbol = external_gene_name, full_name = description, biotype = transcript_biotype )
 t2g<-t2g[,c(ncol(t2g),1:(ncol(t2g)-1))]
 saveRDS(t2g,"t2g.rds")
+ann <- biomaRt::getBM(attributes = c("ensembl_gene_id", "external_gene_name", "description", "gene_biotype"),mart = mart)
+saveRDS(ann,"annie.rds")
 
 #Let's use tximport to summarize results into genes
 kallisto.dir<-paste0(accessions)
@@ -194,7 +196,7 @@ my $qsubHere = <<"QSUB";
 #\$ -o $oneup/logfiles/IndexingEnsembl-${ensSP}-${ensVer}.logfile.txt
 #\$ -e $oneup/logfiles/IndexingEnsembl-${ensSP}-${ensVer}.logfile.txt
 #\$ -l h_rt=04:00:00
-#\$ -l mem=8.9G
+#\$ -l tmem=8.9G,h_vmem=8.9G
 #\$ -N making_index_kallisto
 
 $KALLISTO index -i $OUT $FASTA

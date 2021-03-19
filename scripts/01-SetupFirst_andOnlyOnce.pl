@@ -45,12 +45,12 @@ if(-e '.ucluser') {
 else {
    my $ucluser = &promptUser("Enter the main UCL username ");
    system("echo \"$ucluser\" > .ucluser");
-   system("echo \"$ucluser\" > .csuser");
+   #system("echo \"$ucluser\" > .csuser");
 }
 
 
 if(-e '.csuser') {
-  # print "Re-using previously provided CS username: ".`cat .csuser`."\n";
+   print "Re-using previously provided CS username: ".`cat .csuser`."\n";
 }
 else {
    my $csuser = `whoami`;
@@ -61,9 +61,6 @@ else {
 }
 
 #print "$ucluser, $csuser\n";
-
-
-#system(
 
 
 

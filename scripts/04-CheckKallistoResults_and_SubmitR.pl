@@ -12,7 +12,7 @@ chomp($here);
 my @temp = split('/',$here);
 my $asd = pop(@temp);
 my $oneup = join('/',@temp);
-
+my $proj = "/cluster/project9/MaddyRNAseq";
 
 if(!-e ".ucluser") {
    die "It appears you are trying to run this script without first running the earlier setup scripts. Please run everything in order and try again.\n";
@@ -33,7 +33,7 @@ chomp($CONTAINER);
 
 
 #Sort out input
-die "Usage: $0 RunFileSpecsFile [RDS PATH]\n" if(!@ARGV);
+die "Usage: $0 RunFileSpecsFile\n" if(!@ARGV);
 my $filename = $ARGV[0];
 
 #Check for a sample list file
@@ -84,7 +84,7 @@ my $qsubHere = <<"QSUB";
 #\$ -o $oneup/logfiles/make_matrix.log.txt
 #\$ -e $oneup/logfiles/make_matrix.log.txt
 #\$ -l h_rt=06:00:00
-#\$ -l mem=22.9G
+#\$ -l tmem=22.9G,h_vmem=22.9G
 #\$ -N make_matrix
 #\$ -hold_jid kallisto
 #\$ -wd $oneup/results/
