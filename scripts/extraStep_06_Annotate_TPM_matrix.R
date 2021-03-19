@@ -70,7 +70,7 @@ annotation = function(Species,datafile,fileout){
   ann <- readRDS("annie.rds")
   #data2$ensembl_gene_id<-data2$Id
   #data2$Id<-NULL
-  ann<-ann[ann$ensembl_gene_id %in% data2$ensembl_gene_id] # avoid pre-filtering
+  ann<-ann[ann$ensembl_gene_id %in% data2$ensembl_gene_id,] # avoid pre-filtering
 
   data_ann<-merge(data2,ann,by="ensembl_gene_id")  # maybe change to left_join and remove the line above
   fileout<- paste("Annotated",datafile,sep="")
