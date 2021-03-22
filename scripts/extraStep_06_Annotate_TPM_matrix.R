@@ -66,24 +66,16 @@ annotation = function(Species,datafile,fileout){
   
   #annotation
   bmdataset = toString(Species)
-  #mart <- biomaRt::useMart(biomart = "ensembl", dataset =  "hsapiens_gene_ensembl", host ="http://jul2019.archive.ensembl.org")
-  mart=useMart(biomart="ENSEMBL_MART_ENSEMBL", dataset= bmdataset)
-  #mart = useMart(biomart = "ENSEMBL_MART_ENSEMBL",dataset=bmdataset, host = "dec2016.archive.ensembl.org")
-  
-  #data2$ensembl_gene_id <- data2$V1; data2$V1 <- NULL
-  ann <- biomaRt::getBM(attributes = c("ensembl_gene_id", "external_gene_name", "description", "gene_biotype"), filters="ensembl_gene_id",values=data2$ensembl_gene_id,mart = mart)
+
+  ann <- readRDS("annie.rds")
   #data2$ensembl_gene_id<-data2$Id
   #data2$Id<-NULL
-  data_ann<-merge(data2,ann,by="ensembl_gene_id")
+  ann<-ann[ann$ensembl_gene_id %in% data2$ensembl_gene_id,] # avoid pre-filtering
+
+  data_ann<-merge(data2,ann,by="ensembl_gene_id")  # maybe change to left_join and remove the line above
   fileout<- paste("Annotated",datafile,sep="")
   write.csv(data_ann,fileout,row.names=FALSE)
 }
-
-#fileNames <- Sys.glob("*.txt")
-#for (fileName in fileNames) {
- # annotation_meow("hsapiens_gene_ensembl",fileName) #change here if you have another species
-  
-#}
 
 
 ##function to remove duplicates 

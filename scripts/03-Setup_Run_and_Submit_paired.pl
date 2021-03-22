@@ -6,13 +6,15 @@ use warnings;
 use Data::Dumper;
 use File::Basename;
 
-my $here = `pwd`;
+my $here = `readlink -f .`;
 chomp($here);
 
 my @temp = split('/',$here);
 my $asd = pop(@temp);
 my $oneup = join('/',@temp);
+my $proj = "/cluster/project9/MaddyRNAseq";
 
+my $maxSub = 100;
 
 if(!-e ".ucluser") {
    die "It appears you are trying to run this script without first running the earlier setup scripts. Please run everything in order and try again.\n";
@@ -31,14 +33,14 @@ if(-e "$oneup/results/rawcounts.csv") {
 my $uclID = `cat .ucluser`;
 chomp($uclID);
 
-my $server = "rsync -Puva $uclID\@live.rd.ucl.ac.uk:";
+my $server = "scp $uclID\@live.rd.ucl.ac.uk:";
 my $RDSPATH = '/mnt/gpfs/live/ritd-ag-project-rd002u-mnour10/RNAseq/fastq/';
 
 
 my $CONTAINER = `cat .container`;
 chomp($CONTAINER);
-;
-my $KALLISTO = "singularity exec -B /scratch0/$uclID/ $CONTAINER kallisto ";
+
+my $KALLISTO = "singularity exec -B $proj -B $oneup $CONTAINER kallisto ";
 
 #Sort out input
 die "Usage: $0 RunFileSpecsFile [RDS PATH]\n" if(!@ARGV);
@@ -81,8 +83,14 @@ my $void2 = &promptUser("Using the index that was most recently setup [".basenam
 
 for my $sample (@samples) {
 
+
+&sampleWaiter("kallisto",$maxSub);
+
 system("mkdir -p $oneup/results/$sample/");
+system("mkdir -p $proj/TEMP/");
 system("mkdir -p $oneup/logfiles/");
+system("${server}${RDSPATH}${sample}*.fastq.gz $proj/TEMP/");
+
 
 my $qsubHere = <<"QSUB";
 #!/bin/bash -l
@@ -91,29 +99,29 @@ my $qsubHere = <<"QSUB";
 #\$ -e $oneup/logfiles/${sample}.log.txt
 #\$ -l h_rt=12:00:00
 #\$ -l tmem=11.9G,h_vmem=11.9G
-#\$ -l tscratch=10G
 #\$ -N  kallisto
 #\$ -hold_jid making_index_kallisto
 #\$ -wd $oneup/results/${sample}
 #\$ -V
 #\$ -R y
 
-mkdir -p /scratch0/$uclID/\$JOB_ID/
-#echo "DEBUG"
-${server}${RDSPATH}${sample}*.fastq.gz /scratch0/$uclID/\$JOB_ID/
-ls -lthr /scratch0/$uclID/\$JOB_ID/
 
-time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ /scratch0/$uclID/\$JOB_ID/${sample}*_R1*.fastq.gz /scratch0/$uclID/\$JOB_ID/${sample}*_R2*.fastq.gz
 
-rm -rf /scratch0/$uclID/\$JOB_ID/${sample}*
+ls -lthr $proj/TEMP/
+
+time $KALLISTO quant -i $kallistoindex -b 5 -o $oneup/results/${sample}/ $proj/TEMP/${sample}*_R1*.fastq.gz $proj/TEMP/${sample}*_R2*.fastq.gz
+
+rm -rf $proj/TEMP/${sample}*
 
 function finish {
-    rm -rf /scratch0/$uclID/\$JOB_ID/${sample}*
+    rm -rf $proj/TEMP/${sample}*
 }
 
 trap finish EXIT ERR
 
 QSUB
+
+
 
 open(QSUB, "| qsub") or die;
    print QSUB $qsubHere;
@@ -142,7 +150,7 @@ echo "All jobs finished"
 date
 
 function finish {
-   (echo "Subject: Latest RNAseq run" ; echo ; echo "All samples submitted to the RNAseq pipeline have now finished on the cluster. Please go and run the last steps to merge the data." ) | sendmail ${uclID}\@ucl.ac.uk
+   (echo "Subject: Latest RNAseq run" ; echo ; echo "All samples submitted to the RNAseq pipeline have now finished on the cluster. Please go and run the last steps to merge the data." ) | ssh rds sendmail ${uclID}\@ucl.ac.uk
 }
 
 trap finish EXIT ERR
@@ -161,6 +169,34 @@ close QSUB;
 print STDERR "All samples should now have been submitted for processing. Please check if they finished by running qstat, and once they all exit (qstat returns nothing), Run the next script in the pipeline to check the log files to see if anything failed and continue the processing...\n";
 
 
+
+sub sampleWaiter {
+
+   my $procName = shift;
+   my $procN = shift;
+
+   my $running = &countProc($procName);
+   print STDERR "[".time()."] $running things running... \n"; 
+
+   while ($running >= $procN) {
+      print STDERR "[".time()."] There are already $running jobs running. Waiting a bit to avoid filling the temp space... \r"; 
+      sleep(120);
+      $running = &countProc($procName);
+   }
+
+   print STDERR "\n";
+}
+
+
+
+sub countProc {
+   my $procName = shift;
+
+   my $cnt = `qstat | grep kallisto | wc -l`;
+   chomp($cnt);
+
+   return $cnt;
+}
 
 
 
