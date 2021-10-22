@@ -7,9 +7,9 @@ author: "José Afonso Guerra-Assunção, based on original by Cristina Venturini
 
 These are brief instructions to run the RNAseq pipeline scripts within the new computer science cluster, automatically getting data from the MN RDS space.
 
-Automation has been coded in as much as possible, so things don't have to be done over and over again, but with also a few checkpoints for people to double-check things are are expected. 
+Automation has been coded in as much as possible, so things don't have to be done over and over again, but with also a few checkpoints for people to double-check things are as expected. 
 
-The indexing script connect to Ensembl to retrieve the list of versions available. No need to check the website before running this. 
+The indexing script connect to Ensembl to retrieve the list of versions available. No need to check the website before running this. It is good practice to check for new indexes before each run to make sure the correct biomaRt archive is set (especially if moving from the current version).
 
 Only one index (species/version combination) can be used at any one time, so at the moment it isn't possible to map things to Human and Zebrafish at the same time. Nevertheless it is very easy to map one, change the index and set the second run up. 
 
